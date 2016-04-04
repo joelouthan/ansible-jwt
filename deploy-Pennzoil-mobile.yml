@@ -1,0 +1,44 @@
+---
+# Set timestamp
+- hosts: web16
+  remote_user: jlouthan
+  tasks:
+    - set_fact: mydate="{{lookup('pipe','date +%Y%m%d.%H%M')}}"
+    - debug: var=mydate
+
+# Backup databases
+  tasks:
+      - name: Backup Prod Databases
+        mysql_db: state=dump name={{ dbname }} target=/root/{{ inventory_hostname }}{{ mydate }}.sql
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+- hosts: web12:web13
+  remote_user: jlouthan
+  tasks:
+      - name: Restart varnish
+        service: name=varnish state=restarted
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+- hosts: web12:web13
+  remote_user: jlouthan
+  tasks:
+      - name: Restart varnish
+        service: name=varnish state=restarted
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+- hosts: web12:web13
+  remote_user: jlouthan
+  tasks:
+      - name: Restart varnish
+        service: name=varnish state=restarted
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+

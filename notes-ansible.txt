@@ -1,0 +1,245 @@
+# Serves in a lit
+for servers1 in $(cat ./servers.internal7) ; do ssh -t $servers1 'sudo yum install -y python-simplejson' ; done
+for servers1 in $(cat ./servers.pc11) ; do ssh -t $servers1 'sudo yum install -y python-simplejson' ; done
+for servers1 in $(cat ./servers.pnz) ; do ssh -t $servers1 'sudo yum install -y python-simplejson' ; done
+for servers1 in $(cat ./servers.pwn) ; do ssh -t $servers1 'sudo yum install -y python-simplejson' ; done
+for servers1 in $(cat ./servers.qs) ; do ssh -t $servers1 'sudo yum install -y python-simplejson' ; done
+for servers1 in $(cat ./servers.usmc6) ; do ssh -t $servers1 'sudo yum install -y python-simplejson' ; done
+for servers1 in $(cat ./servers.usmc8) ; do ssh -t $servers1 'sudo yum install -y python-simplejson' ; done
+for servers1 in $(cat ./servers.usvi) ; do ssh -t $servers1 'sudo yum install -y python-simplejson' ; done
+
+
+# Test ping
+
+
+# One server
+ssh -t qsdevweb 'sudo yum install -y python-simplejson'
+
+
+# Adding to Ansible hosts
+[root@632352-ws1 ~]# vi /etc/ansible/hosts
+
+# Ping all Ansible hosts
+ansible all -m ping
+
+# Ping all USMC8 Web servers
+ansible usmc8:\&web -m ping
+
+# When needing sudo
+When speaking with remote machines, Ansible by default assumes you are using SSH keys. SSH keys are encouraged but password authentication can also be used where needed by supplying the option --ask-pass. If using sudo features and when sudo requires a password, also supply --ask-become-pass (previously --ask-sudo-pass which has been deprecated).
+
+ansible web -m yum -a "name=httpd state=present"
+ansible qsdevweb -m yum -a "name=apache2 state=present"
+
+#### Changing password
+
+# First, get a hash for your password
+python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
+
+# Then plug that into password=
+ansible ws3 -m user -a 'name=username password=insert_hash_here' -u username --ask-pass --become --ask-become-pass
+#### gops is bare minimum to get info it needs. To do any modification, requires human's (re: SysAdmin) interaction and sudo access. Also, we will only use change password to modify it for just ourselves and not anybody elses.
+
+# Now that we know that works, lets do it for the rest of the servers
+ansible all:\!ws3 -m user -a 'name=username password=insert_hash_here' -u username --ask-pass --become --ask-become-pass
+
+# Ex.
+ansible all:\!ws3 -m user -a 'name=jlouthan password=$6$rounds=656000$LCOcr2/qqHoIe72S$tZ3hqrt7aNbusqXfHIs3AT7g2P.37QQB8YR05.voZ64dtOfot6IXnHws54WnQ7x8s2h/i7jhNf5M6T8LBqgq41' -u jlouthan --ask-pass --become --ask-become-pass
+
+[jlourhan@ws1]$ ansible pc11 -m user -a 'name=jlouthan password=$6$rounds=656000$LCOcr2/qqHoIe72S$tZ3hqrt7aNbusqXfHIs3AT7g2P.37QQB8YR05.voZ64dtOfot6IXnHws54WnQ7x8s2h/i7jhNf5M6T8LBqgq41' --become --ask-become-pass
+
+
+
+################
+
+[internal]
+ftp1
+ftp2
+ws1
+ws3
+ws4
+
+[jumps]
+util1
+ws1
+ws3
+
+[ftp]
+ftp1
+ftp2
+ftp
+
+[pc11]
+pc11db1
+pc11web1
+pc11web2
+
+[pnz]
+web12
+web13
+web14
+web15
+web16
+
+[pwn]
+pwn
+
+[qs]
+qsdevdb
+qsdevweb
+qsqadb
+qsqaweb
+qsproddb
+qsprodweb1
+qsprodweb2
+
+[usmc6]
+db1-ep
+db2-ep
+slavedb-ep
+stgdb-ep
+stgweb2-ep
+web1-ep
+web2-ep
+
+[usmc8]
+cms1
+cms2
+db1
+db2
+ftp
+proxy1
+proxy2
+proxy3
+proxy4
+qadb1
+qadb2
+qaproxy1
+qaproxy2
+qaweb1
+qaweb2
+rep1
+stagdb1
+vm1
+vm2
+vm3
+vm4
+web1
+web2
+web3
+web4
+util1
+
+[usvi]
+usvidevdb
+usvidevweb
+usviproddb
+usviprodweb1
+usviprodweb2
+
+[nonprod]
+web14
+pwn
+qsdevdb
+qsdevweb
+qsqadb
+qsqaweb
+stgdb-ep
+stgweb2-ep
+web1-ep
+qadb1
+qadb2
+qaproxy1
+qaproxy2
+qaweb1
+qaweb2
+stagdb1
+util1
+usvidevdb
+usvidevweb
+
+[prod]
+web12
+web13
+web16
+pwn
+qsproddb
+qsprodweb1
+qsprodweb2
+db1-ep
+db2-ep
+web2-ep
+cms1
+cms2
+db1
+db2
+ftp
+proxy1
+proxy2
+proxy3
+proxy4
+rep1
+vm1
+vm2
+vm3
+vm4
+web1
+web2
+web3
+web4
+usviproddb
+usviprodweb1
+usviprodweb2
+
+[web]
+web14
+web12
+web13
+pwn
+qsdevweb
+qsqaweb
+qsprodweb1
+qsprodweb2
+stgweb2-ep
+web1-ep
+web2-ep
+web1
+web2
+web3
+web4
+usvidevweb
+usviprodweb1
+usviprodweb2
+
+[db]
+web14
+web16
+pwn
+qsdevdb
+qsqadb
+qsproddb
+db1-ep
+db2-ep
+slavedb-ep
+stgdb-ep
+db1
+db2
+qadb1
+qadb2
+stagdb1
+usviproddb
+usvidevdb
+
+[vm]
+vm1
+vm2
+vm3
+vm4
+
+[proxy]
+qaproxy1
+qaproxy2
+proxy1
+proxy2
+proxy3
+proxy4

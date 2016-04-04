@@ -1,0 +1,23 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  tasks: 
+      - name: Remove files from current gops .ssh dir
+        command: rm -f /home/gops/.ssh/*
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+      - name: Create gops authorized_keys file
+        file: path=/home/gops/.ssh/authorized_keys state=touch mode=0644
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+      - name: Insert new key
+        shell: echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAo3D2V9ODmLqwUuNacfe8pFrc4tKn8AHCvUflxoKW8hVIaxIQ/Xm4qkdkK5BiGwNoPTsjs5fNL1m7MfsWzNVA8wBZ9soeixFj2EpCLy4GMdT/5Orrqib+FpVOTA/eJ6sOyoLsHgapEEtaXMOda/hfPpKe1N3XBfyuUYDifYmVQWstSNr5yuxFmcMiDKNY73WU1HbuSMbGwm5mz+cyuIUHNTwlGm6rxJ0Lwa1O4jqThWtYUZlwZVMFwKt01kYVhBYthU+df22GscEdJi0xwQhM6tSgrVP1uEB3i6NEw6cfdlUiEgGELcjKQO5HdMP5A/w6siSAnQtzfsRV4aV5VoMTrw== gops@632352-ws1.rmgconnect.com" >> /home/gops/.ssh/authorized_keys
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo

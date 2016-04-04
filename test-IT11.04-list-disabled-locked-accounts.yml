@@ -1,0 +1,11 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name: List locked accounts
+        shell: cat /etc/passwd | cut -d ":" -f 1 | awk '{ system("passwd -S " $0) }' | grep LK
+        register: wheel
+        become: yes
+        become_method: sudo
+
+      - debug: var=wheel.stdout_lines
