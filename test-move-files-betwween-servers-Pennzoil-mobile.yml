@@ -1,9 +1,9 @@
 ---
-- hosts: web12:web13
+- hosts: web14
   remote_user: jlouthan
   tasks:
-      - name: Restart varnish
-        service: name=varnish state=restarted
+      - name: Fetch the backup sql dump
+        command: 
         remote_user: jlouthan
         become: yes
         become_method: sudo

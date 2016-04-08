@@ -1,23 +1,9 @@
 ---
 - hosts: web12:web13
   remote_user: jlouthan
-  become: yes
-  become_method: sudo
   tasks:
-      - name: Lock account
-        command: passwd -l gstringer
+      - name: Restart varnish
+        service: name=varnish state=restarted
         remote_user: jlouthan
         become: yes
         become_method: sudo
-
-      - name: Expire account
-        user: name=gstringer expires=1
-        remote_user: jlouthan
-        become: yes
-        become_method: sudo
-       
-      - name: Remove keys
-        command: rm -f /home/gstringer/authorized_keys
-        remote_user: jlouthan
-        become: yes
-        become_method: sudo 

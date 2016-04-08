@@ -1,5 +1,5 @@
 ---
-- hosts: web12:web13
+- hosts: pc11web1:pc11web2
   remote_user: jlouthan
   tasks:
       - name: Restart varnish

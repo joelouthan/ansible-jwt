@@ -1,0 +1,18 @@
+---
+# Set timestamp
+- hosts: web16
+  remote_user: jlouthan
+  tasks:
+    - set_fact: mydate="{{lookup('pipe','date +%Y%m%d.%H%M')}}"
+    - debug: var=mydate
+
+# Backup Prod Databases
+  tasks:
+      - name: Backup Prod Databases
+        mysql_db: state=dump name={{ item[0] }} target=/root/{{ item[0] }}{{ item[1] }}.sql
+                with_nested:
+                - [ 'mobile_pennzoil', 'wp_pennzoil', 'wp_pureplus' ] 
+                - "{{mydate}}"
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo

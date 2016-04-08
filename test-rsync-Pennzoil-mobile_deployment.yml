@@ -1,0 +1,17 @@
+---
+- hosts: web14
+  remote_user: jlouthan
+
+  tasks:
+      - name: rsync between qa and web12
+        shell: "rsync -av /home/websync/Testing/ web12:/home/websync/Testing/"
+        register: rsyncweb12
+        sudo: yes
+        sudo_user: "websync"
+
+      - name: rsync between qa and web13
+        shell: "rsync -av /home/websync/Testing/ web13:/home/websync/Testing/"
+        sudo: yes
+        sudo_user: "websync"
+
+      - debug: var=rsyncweb12.stdout_lines

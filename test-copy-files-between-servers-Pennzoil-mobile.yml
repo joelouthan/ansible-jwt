@@ -1,0 +1,15 @@
+---
+- hosts: web14
+  remote_user: jlouthan
+  tasks:
+      - name: Fetch the backup sql dump
+        fetch: src=/root/preprod_qa_m_pennzoil.sql dest=/tmp/fetch/ fail_on_missing=yes flat=yes
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+- hosts: web16
+  remote_user: jlouthan
+  tasks:
+      - name: Copy the backup sql dump to web16
+        copy: src=/tmp/fetch/preprod_qa_m_pennzoil.sql dest=/home/jlouthan/

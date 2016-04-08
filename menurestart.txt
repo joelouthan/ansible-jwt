@@ -1,0 +1,4 @@
+restart-varnish-PC11.yml
+restart-varnish-PNZ.yml
+restart-varnish.yml
+test-restart-varnish.yml
