@@ -4,9 +4,12 @@
   tasks:
       - name: Backup Prod Desktop Databases
         shell: mysqldump wp_pennzoil | gzip -9c > ~/wp_pennzoil.`date +%Y-%m-%d.%H%M`.sql.gz ; l ~/ | grep `date +%Y-%m-%d`
+        register: dumpcheck
         remote_user: jlouthan
         become: yes
         become_method: sudo
+
+      - debug: var=dumpcheck.stdout_lines
 
 - pause: prompt="Make sure that the prod backups look good before you continue"
 

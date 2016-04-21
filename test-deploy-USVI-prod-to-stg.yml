@@ -1,0 +1,29 @@
+---
+- hosts: usviproddb
+  remote_user: jlouthan
+  tasks:
+      - name: Backup Prod Database
+        shell: mysqldump usvi_drupal | gzip -9c > ~jlouthan/usvi_drupal.`date +%Y-%m-%d`.sql.gz ; ls -la ~jlouthan/ | grep `date +%Y-%m-%d`
+        register: dumpcheck2
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+      - debug: var=dumpcheck2.stdout_lines
+
+      - pause: prompt="Make sure that the prod backups look good before you continue"
+
+- hosts: ws1
+  remote_user: jlouthan
+  tasks:
+      - name: Pull the Prod DB Backup to here
+        shell: scp jlouthan@usviproddb:~/usvi_drupal.`date +%Y-%m-%d`.sql.gz ~/
+
+      - name: Push the Prod DB Backup to usvidevdb
+        shell: scp ~/usvi_drupal.`date +%Y-%m-%d`.sql.gz jlouthan@usvidevdb:~/
+
+- hosts: usvidevdb
+  remote_user: jlouthan
+  tasks:
+      - name: Gunzip the Backup file
+        shell: gunzip ~jlouthan/usvi_drupal.`date +%Y-%m-%d`.sql.gz -d

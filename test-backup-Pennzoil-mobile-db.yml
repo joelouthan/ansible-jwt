@@ -1,0 +1,12 @@
+---
+- hosts: web14
+  remote_user: jlouthan
+  tasks:
+      - name: Dump the preprod db
+        shell: "mysqldump preprod_qa_m_pennzoil > ~/preprod_qa_m_pennzoil.sql"
+        register: mysqldump_preprod
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+      - debug: var=mysqldump_preprod.stdout_lines

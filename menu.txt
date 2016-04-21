@@ -5,6 +5,14 @@ backup-Pennzoil-qa-dbs.yml
 deploy-PC11.yml
 deploy-Pennzoil-desktop.yml
 deploy-Pennzoil-mobile.yml
+IT09.01-account-settings-for-users-internal.yml
+IT09.01-account-settings-for-users-shell.yml
+IT09.01-account-settings-for-users-usmc6.yml
+IT09.01-account-settings-for-users-usmc8.yml
+IT09.01-account-settings-for-users-usvi.yml
+IT09.01-account-settings-for-users.yml
+IT10.02-check-wheel-members.yml
+IT11.04-list-disabled-locked-accounts.yml
 lock-username-ask.yml
 ping-all-ask.yml
 ping-all.yml

@@ -4,9 +4,14 @@
   tasks:
       - name: Backup Prod Databases
         shell: mysqldump prod_pc11 | gzip -9c > ~/prod_pc11.`date +%Y-%m-%d.%H%M`.sql.gz ; l ~/ | grep `date +%Y-%m-%d`
+        register: dumpcheck
         remote_user: jlouthan
         become: yes
         become_method: sudo
+
+      - debug: var=dumpcheck.stdout_lines
+
+- pause: prompt="Make sure that the prod backups look good before you continue"
 
 - hosts: ws4
   remote_user: jlouthan
