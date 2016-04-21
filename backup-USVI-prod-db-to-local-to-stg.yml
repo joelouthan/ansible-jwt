@@ -4,14 +4,14 @@
   tasks:
       - name: Backup Prod Database
         shell: mysqldump usvi_drupal | gzip -9c > ~jlouthan/usvi_drupal.`date +%Y-%m-%d`.sql.gz ; ls -la ~jlouthan/ | grep `date +%Y-%m-%d`
-        register: dumpcheck2
-        remote_user: jlouthan
+        register: dumpprod
         become: yes
         become_method: sudo
 
-      - debug: var=dumpcheck2.stdout_lines
+      - debug: var=proddump.stdout_lines
 
-      - pause: prompt="Make sure that the prod backups look good before you continue"
+      - name: Make sure that the Prod DB Backups look good before you contine
+        pause: 
 
 - hosts: ws1
   remote_user: jlouthan
@@ -25,5 +25,5 @@
 - hosts: usvidevdb
   remote_user: jlouthan
   tasks:
-      - name: Gunzip the Backup file
-        shell: gunzip ~jlouthan/usvi_drupal.`date +%Y-%m-%d`.sql.gz -d
+      - name: Unzip the Backup file
+        shell: gunzip -f ~jlouthan/usvi_drupal.`date +%Y-%m-%d`.sql.gz
