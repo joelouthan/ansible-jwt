@@ -1,7 +1,0 @@
----
-# Set timestamp
-- hosts: web14
-  remote_user: jlouthan
-  tasks:
-  - set_fact: mydate="{{lookup('pipe','date +%Y-%m-%d.%H%M')}}"
-  - debug: var=mydate

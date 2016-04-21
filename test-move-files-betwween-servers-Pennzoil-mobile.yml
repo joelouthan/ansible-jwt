@@ -1,9 +1,0 @@
----
-- hosts: web14
-  remote_user: jlouthan
-  tasks:
-      - name: Fetch the backup sql dump
-        command: 
-        remote_user: jlouthan
-        become: yes
-        become_method: sudo

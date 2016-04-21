@@ -1,9 +1,0 @@
----
-- hosts: web14
-  remote_user: jlouthan
-  tasks:
-      - name: Recreate preprod database
-        shell: "mysqladmin -f drop preprod_qa_m_pennzoil && mysqladmin create preprod_qa_m_pennzoil && mysqldump qa_m_pennzoil | mysql preprod_qa_m_pennzoil"
-        remote_user: jlouthan
-        become: yes
-        become_method: sudo

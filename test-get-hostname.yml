@@ -1,9 +1,0 @@
----
-- hosts: qadb1:qadb2
-  remote_user: jlouthan
-  tasks:
-      - name: Get proper hostnames
-        shell: hostname
-        register: hostname
-
-      - debug: var=hostname.stdout_lines

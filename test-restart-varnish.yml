@@ -1,9 +1,0 @@
----
-- hosts: web12:web13
-  remote_user: jlouthan
-  tasks:
-      - name: Restart varnish
-        service: name=varnish state=restarted
-        remote_user: jlouthan
-        become: yes
-        become_method: sudo
