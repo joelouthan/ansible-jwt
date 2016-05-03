@@ -1,0 +1,97 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=latest
+        become: yes
+        become_method: sudo
+
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup JIRA Database
+        mysql_db: "state=dump name=jira target=/home/jlouthan/Atlassian/jira.{{ timestamp.stdout }}.sql.gz"
+        become: yes
+        become_method: sudo
+
+      - name: Backup JIRA attachments
+        shell: tar -czvf /home/jlouthan/Atlassian/jira-attachments.{{ timestamp.stdout }}.tar.gz -C /var/atlassian/application-data/jira/data/ .
+        become: yes
+        become_method: sudo
+
+      - name: Backup Atlassian configs
+        shell: tar -czvf /home/jlouthan/Atlassian/atlassian-configs{{ timestamp.stdout }}.tar.gz /var/www/jira.jwtreporting.com/bin/ /var/www/jira.jwtreporting.com/conf/ /var/atlassian/application-data/jira/jira-config.properties /var/atlassian/application-data/jira/dbconfig.xml /var/atlassian/application-data/confluence/confluence.cfg.xml /var/atlassian/application-data/bitbucket/shared/bitbucket.properties
+        become: yes
+        become_method: sudo
+
+      - name: Set the ownership to jlouthan
+        file: path=/home/jlouthan/ owner=jlouthan group=jlouthan recurse=yes
+        become: yes
+        become_method: sudo
+
+      - name: See the Atlassian backups
+        shell: ls -la /home/jlouthan/Atlassian/ | grep {{ datestamp.stdout }}
+        register: backupatlas
+
+      - debug: var=backupatlas.stdout_lines
+
+      - pause: prompt='Make sure the Atlassian backups are  good to go'
+
+      - name: Pull JIRA db backups to local
+        fetch: src=/home/jlouthan/Atlassian/jira.{{ timestamp.stdout }}.sql.gz dest=/home/jlouthan/Atlassian/ flat=yes
+
+      - name: Pull JIRA attachments to local
+        fetch: src=/home/jlouthan/Atlassian/jira-attachments.{{ timestamp.stdout }}.tar.gz dest=/home/jlouthan/Atlassian/ flat=yes
+
+      - name: Pull Atlassian config backups to local
+        fetch: src=/home/jlouthan/Atlassian/atlassian-configs{{ timestamp.stdout }}.tar.gz dest=/home/jlouthan/Atlassian/ flat=yes
+
+- hosts: ws1
+  remote_user: jlouthan
+  tasks:                       
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=latest
+        become: yes
+        become_method: sudo
+
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup bitbucket Database
+        mysql_db: "state=dump name=bitbucket target=/home/jlouthan/Atlassian/bitbucket.{{ timestamp.stdout }}.sql.gz"
+        become: yes
+        become_method: sudo
+
+      - name: Backup confluence Database
+        mysql_db: "state=dump name=confluence target=/home/jlouthan/Atlassian/confluence.{{ timestamp.stdout }}.sql.gz"
+        become: yes
+        become_method: sudo
+
+      - name: Set the ownership to jlouthan
+        file: path=/home/jlouthan/ owner=jlouthan group=jlouthan recurse=yes
+        become: yes
+        become_method: sudo
+
+      - name: See all of the Atlassian backups
+        shell: ls -la /home/jlouthan/Atlassian/ | grep {{ datestamp.stdout }}
+        register: dumpatlassian
+
+      - debug: var=dumpatlassian.stdout_lines
+
+      - pause: prompt='Check to make sure all the Atlassian DBs are in place as expected'
+

@@ -1,0 +1,8 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=latest
+        become: yes
+        become_method: sudo

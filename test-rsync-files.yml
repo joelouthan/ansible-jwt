@@ -1,0 +1,70 @@
+---
+###################################
+# How to push files
+###################################
+- hosts: web14
+  remote_user: jlouthan
+  tasks: 
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+
+      - name: Create test file
+        file: path=/home/jlouthan/testingpush{{ timestamp.stdout }} state=touch
+
+      - name: List the file recently created
+        shell: ls -la /home/jlouthan | grep {{ datestamp.stdout }}
+        register: touchtestpush
+
+      - debug: var=touchtestpush.stdout_lines
+
+      - pause: prompt='Note the name of the file'
+
+      - name: Push test file from web14 to web16
+        shell: rsync -av /home/jlouthan/testingpush{{ timestamp.stdout }} /home/jlouthan/
+        register: testtouchpush
+
+      - debug: var=testtouchpush.stdout_lines
+
+      - pause: prompt='Did the file make it over okay?'
+
+
+###################################
+# How to pull files
+###################################
+- hosts: web16
+  remote_user: jlouthan
+  tasks:
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+
+      - name: Create test file
+        file: path=/home/jlouthan/testingpull{{ timestamp.stdout }} state=touch
+        delegate_to: web14
+
+      - name: List the file recently created
+        shell: ls -la /home/jlouthan | grep {{ datestamp.stdout }}
+        register: touchtestpull
+        delegate_to: web14
+
+      - debug: var=touchtestpull.stdout_lines
+
+      - pause: prompt='Note the name of the file'
+
+      - name: Pull file from web14 to web16
+        shell: rsync -av web14:/home/jlouthan/testingpull{{ timestamp.stdout }} /home/jlouthan/
+#
+        register: testtouchpull
+        
+      - debug: var=testtouchpull.stdout_lines
+
+      - pause: prompt='Did it make it over okay?'

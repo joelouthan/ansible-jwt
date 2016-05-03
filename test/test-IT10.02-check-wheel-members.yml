@@ -1,0 +1,11 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name: List wheel members
+        shell: cat /etc/group | grep wheel
+        register: wheel
+        become: yes
+        become_method: sudo
+
+      - debug: var=wheel.stdout_lines

@@ -5,7 +5,7 @@
 dirPlay='/home/jlouthan/Playbooks'
 menu="$dirPlay/menutest.txt"
 
-ls -1 $dirPlay | grep yml | grep 'test\-' > $menu
+ls -1 $dirPlay | grep yml | grep test > $menu
 
 # Set the prompt for the select command
 PS3="Type a number or 'q' to quit: "

@@ -5,7 +5,7 @@
 dirPlay='/home/jlouthan/Playbooks'
 menu="$dirPlay/menuGCC.txt"
 
-ls -1 $dirPlay | grep backup > $menu
+ls -1 $dirPlay | grep "backup-" | grep -v "retry" > $menu
 
 # Set the prompt for the select command
 PS3="Type a number or 'q' to quit: "

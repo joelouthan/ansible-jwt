@@ -6,4 +6,3 @@
   tasks: 
         - name: Test connection
           ping: 
-          remote_user: jlouthan

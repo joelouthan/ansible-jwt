@@ -1,0 +1,84 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=latest
+        become: yes
+        become_method: sudo
+
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup Atlassian configs
+        shell:
+        become: yes
+        become_method: sudo
+
+      - name: Pull Atlassian configs
+        fetch:
+
+      - name: Backup jira Database
+        mysql_db: "state=dump name=jira target=~jlouthan/jira.{{ timestamp.stdout }}.sql.gz"
+        become: yes
+        become_method: sudo
+
+      - name: See the jira DB backup
+        shell: ls -la ~jlouthan/ | grep {{ datestamp.stdout }}
+        register: dumpjira
+
+      - debug: var=dumpjira.stdout_lines
+
+      - pause: prompt='Make sure the JIRA DB is good to go'
+
+      - name: Pull the jira DB Backup to here
+        fetch: src=~jlouthan/jira.{{ timestamp.stdout }}.sql.gz dest=~jlouthan/ flat=yes
+
+- hosts: ws1
+  remote_user: jlouthan
+  tasks:                       
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=latest
+        become: yes
+        become_method: sudo
+
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup bitbucket Database
+        mysql_db: "state=dump name=bitbucket target=~jlouthan/bitbucket.{{ timestamp.stdout }}.sql.gz"
+        become: yes
+        become_method: sudo
+
+      - name: Backup confluence Database
+        mysql_db: "state=dump name=confluence target=~jlouthan/confluence.{{ timestamp.stdout }}.sql.gz"
+        become: yes
+        become_method: sudo
+
+      - name: Set the ownership to jlouthan
+        file: path=/home/jlouthan owner=jlouthan group=jlouthan recurse=yes
+        become: yes
+        become_method: sudo
+
+      - name: See the DB backups
+        shell: ls -la ~jlouthan/ | grep {{ datestamp.stdout }}
+        register: dumpatlassian
+
+      - debug: var=dumpatlassian.stdout_lines
+
+      - pause: prompt='Check to make sure all the Atlassian DBs are in place as expected'
+

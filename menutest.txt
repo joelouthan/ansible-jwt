@@ -1,6 +1,1 @@
-test-backup-Pennzoil-qa-dbs.yml
-test-install-yum-package.yml
-test-lock-username-ask.yml
-test-remove-user-from-wheel.yml
-test-set-timestamp.yml
-test-update-sshkeys-authorized_keys.yml
+snippets-timedatestamp.yml

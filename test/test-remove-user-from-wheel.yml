@@ -1,0 +1,9 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name: Remove user from wheel group
+        command: gpasswd -d mhowell wheel
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo

@@ -1,0 +1,33 @@
+---
+- hosts: usvidevdb
+  remote_user: jlouthan
+  tasks:
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        # Consider switch this to a shell module with date command
+        register: timestamp
+        run_once: true
+
+      - debug: var=timestamp.stdout
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        # Consider switch this to a shell module with date command
+        register: datestamp
+        run_once: true
+
+      - debug: var=datestamp.stdout
+
+      - name: Backup Stag Database
+        mysql_db: "state=dump name=stg_visitusvi target=~jlouthan/stg_visitusvi.{{ datestamp.stdout }}.sql"
+        become: yes
+        become_method: sudo
+                                
+      - name: See the the Stag DB backup
+        shell: "ls -la ~jlouthan/ | grep {{ timestamp.stdout }}"
+        register: dumpstag
+
+      - debug: var=dumpstag.stdout_lines
+
+      - name: Make sure that the Stag DB Backups look good before you continue
+        pause:

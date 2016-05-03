@@ -1,0 +1,28 @@
+---
+- hosts: qsproddb
+  remote_user: jlouthan
+  tasks:
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup prod db
+        mysql_db: name=qs_com state=dump target=/root/{{ timestamp.stdout }}.sql.gz
+        register: dumpprod
+        become: yes
+        become_method: sudo
+        
+      - debug: var=dumpprod.stdout_lines
+
+      - pause: prompt=Please double check that the backup is good
+
+- hosts: qsprodweb1:qsprodweb2
+  remote_user: jlouthan
+  tasks: 
+      - name: 

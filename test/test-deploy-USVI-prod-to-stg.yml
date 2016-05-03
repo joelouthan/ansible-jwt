@@ -36,10 +36,11 @@
 
 - hosts: usvidevdb
   remote_user: jlouthan
-  tasks:                       
+  tasks:
       - name: Backup the Staging DB
         mysql_db: "state=dump name=stg_visitusvi target=~jlouthan/stg_visitusvi.{{ timestamp.stdout }}.sql.gz"
-                                
+
       - name: Push the Prod DB Backup to Staging
         copy: ~jlouthan/usvi_drupal.{{ timestamp.stdout }}.sql.gz dest=~jlouthan/
         mysql_db: name=stg_visitusvi state=import target=~jlouthan/usvi_drupal.{{ timestamp.stdout }}.sql.gz
+

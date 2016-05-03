@@ -1,7 +1,4 @@
 deploy-PC11.yml
 deploy-Pennzoil-desktop.yml
 deploy-Pennzoil-mobile.yml
-deploy-USVI-prod-to-stg.yml
-test-deploy-PC11.yml
-test-deploy-Pennzoil-mobile.yml
-test-rsync-Pennzoil-mobile_deployment.yml
+deploy-USVI-prod-to-staging.yml

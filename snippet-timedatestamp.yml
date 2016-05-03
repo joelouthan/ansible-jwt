@@ -1,0 +1,23 @@
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup Staging Database
+        mysql_db: "state=dump name=stg_visitusvi target=~jlouthan/stg_visitusvi.{{ timestamp.stdout }}.sql"
+        become: yes
+        become_method: sudo
+
+      - name: See the stg_visitusvi DB backup
+        shell: ls -la ~jlouthan/ | grep {{ datestamp.stdout }}
+        register: dumpdb
+
+      - debug: var=dumpdb.stdout_lines
+
+      - name: Make sure that the stg_visitusvi DB Backups look good before you continue
+        pause:

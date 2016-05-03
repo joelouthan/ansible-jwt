@@ -1,0 +1,30 @@
+---
+- hosts: usvidevweb
+  remote_user: jlouthan
+  tasks:
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Compress files/ on Prod
+        shell: tar -czvf ~jlouthan/files-www.visitusvi.com.{{ timestamp.stdout }}.tar.gz -C /var/www/sites/www.visitusvi.com/sites/default/files/ .
+        become: yes
+        become_method: sudo
+
+      - name: Pull files/ from Prod
+        fetch: src=/home/jlouthan/files-www.visitusvi.com.{{ timestamp.stdout }}.tar.gz dest=/home/jlouthan/
+
+- hosts: usvidevweb
+  remote_user: jlouthan
+  tasks:
+      - name: Backup current files/ on Staging
+        shell: mv /var/www/sites/stg-www.visitusvi.com/sites/default/files/ /var/www/sites/stg-www.visitusvi.com/sites/default/files{{ datestamp.stdout }}/
+
+        name: Push and uncompress files/ archive to Staging
+        unarchive: src=/home/jlouthan/files-www.visitusvi.com.{{ timestamp.stdout }}.tar.gz dest=/var/www/sites/stg-www.visitusvi.com/sites/default/files/ owner=websync group=websync

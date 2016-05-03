@@ -1,0 +1,75 @@
+---
+- hosts: web16
+  remote_user: jlouthan
+  tasks:
+      - name: Backup Prod Databases
+        shell: mysqldump mobile_pennzoil | gzip -9c > ~/mobile_pennzoil.`date +%Y-%m-%d.%H%M`.sql.gz ; l ~/ | grep `date +%Y-%m-%d`
+        register: mysqldump
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+      - debug: var=mysqldump.stdout_lines
+
+- hosts: web14
+  remote_user: jlouthan
+  tasks:
+      - name: Recreate preprod database
+        shell: "mysqladmin -f drop preprod_qa_m_pennzoil && mysqladmin create preprod_qa_m_pennzoil && mysqldump qa_m_pennzoil | mysql preprod_qa_m_pennzoil"
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+      - name: Search and replace FQDN (Wordpress sites only)
+        shell: "/usr/local/jwt/Search-Replace-DB/srdb.cli.php -h localhost -n preprod_qa_m_pennzoil -u root -p '' -s 'qa.pennzoil.com' -r 'www.pennzoil.com' ; /usr/local/jwt/Search-Replace-DB/srdb.cli.php -h localhost -n preprod_qa_m_pennzoil -u root -p '' -s 'qa.pennzoil.ca' -r 'www.pennzoil.ca' ; /usr/local/jwt/Search-Replace-DB/srdb.cli.php -h localhost -n preprod_qa_m_pennzoil -u root -p '' -s 'qa-m.pennzoil.com' -r 'm.pennzoil.com'"
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+      - name: Dump the preprod db
+        shell: "mysqldump preprod_qa_m_pennzoil > ~/preprod_qa_m_pennzoil.sql"
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+      - name: Fetch the backup sql dump from QA
+        fetch: src=/root/preprod_qa_m_pennzoil.sql dest=/tmp/fetch/ fail_on_missing=yes flat=yes
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo
+
+- hosts: web16
+  remote_user: jlouthan
+  tasks:
+      - name: Copy the backup sql dump to Prod
+        copy: src=/tmp/fetch/preprod_qa_m_pennzoil.sql dest=/home/jlouthan/
+
+- hosts: web16
+  remote_user: jlouthan
+  tasks:
+      - name: Restore Prod DB from Preprod QA DB
+        shell: "mysql mobile_pennzoil < ~jlouthan/preprod_qa_m_pennzoil"
+        become: yes
+        become_method: sudo
+
+- hosts: web14
+  remote_user: jlouthan
+
+  tasks:
+      - name: rsync between qa and web12
+        shell: "rsync -av /var/www/qa-m.pennzoil.com/public/wp-content/uploads/ web12:/var/www/m.pennzoil.com/public/wp-content/uploads/"
+        sudo: yes
+        sudo_user: "websync"
+
+      - name: rsync between qa and web13
+        shell: "rsync -av /var/www/qa-m.pennzoil.com/public/wp-content/uploads/ web13:/var/www/m.pennzoil.com/public/wp-content/uploads/"
+        sudo: yes
+        sudo_user: "websync"
+
+- hosts: web12:web13
+  remote_user: jlouthan
+  tasks:
+      - name: Restart varnish
+        service: name=varnish state=restarted
+        become: yes
+        become_method: sudo

@@ -1,0 +1,33 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        # Consider switch this to a shell module with date command
+        register: timestamp
+        run_once: true
+
+      - debug: var=timestamp.stdout
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        # Consider switch this to a shell module with date command
+        register: datestamp
+        run_once: true
+
+      - debug: var=datestamp.stdout
+
+      - name: Backup jira Database
+        mysql_db: "state=dump name=jira target=~jlouthan/jira.{{ timestamp.stdout }}.sql"
+        become: yes
+        become_method: sudo
+                                
+      - name: See the jira DB backup
+        shell: ls -la ~jlouthan/ | grep {{ datestamp.stdout }}
+        register: dumpdb
+
+      - debug: var=dumpdb.stdout_lines
+
+      - name: Make sure that the jira DB Backups look good before you continue
+        pause:
