@@ -1,0 +1,13 @@
+---
+homedir: /home/jlouthan/
+homehost: ws1
+proddbhost: usviproddb
+proddbname: usvi_drupal
+devdbhost: usvidevdb
+devdbname: qa_visitusvi
+prodwebhost: usviprodweb1
+prodweb: www.visitusvi.com
+prodwebfiles: "/var/www/sites/{{ prodweb }}/sites/default/files/"
+dewebhost: usvidevweb
+devweb: qa-www.visitusvi.com
+devwebfiles: "/var/www/sites/{{ devweb }}/sites/default/files/"

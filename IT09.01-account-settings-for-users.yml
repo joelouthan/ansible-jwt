@@ -9,3 +9,11 @@
         become_method: sudo
 
       - debug: var=chage.stdout_lines
+
+      - name: Get listing of all locked accounts
+        shell: 'grep \!\! /etc/shadow | cut -d: -f1'
+        register: locked
+        become: yes
+        become_method: sudo
+
+      - debug: var=locked.stdout_lines

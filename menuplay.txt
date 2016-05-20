@@ -6,3 +6,4 @@ playGCC
 playrestarts
 playSec
 playtests
+playuser

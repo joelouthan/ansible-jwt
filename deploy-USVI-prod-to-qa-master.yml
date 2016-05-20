@@ -1,0 +1,103 @@
+---
+- hosts: ws1
+  remote_user: jlouthan
+  vars_files:
+      - vars/vars-deploy-USVI-prod-to-qa-master.yml
+
+  tasks:
+      - name: Get current timestamp
+        shell: date +%Y-%m-%d.%H%M
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        shell: date +%Y-%m-%d
+        register: datestamp
+        run_once: true
+
+
+- hosts: usviproddb
+  remote_user: jlouthan
+  vars_files:
+      - vars/vars-deploy-USVI-prod-to-qa-master.yml
+
+  tasks:
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=present
+        become: yes
+        become_method: sudo
+
+      - name: "Backup {{ proddbname }} Database"
+        mysql_db: "state=dump name={{ proddbname }} target={{ homedir }}{{ proddbname }}{{ hostvars['ws1']['timestamp']['stdout'] }}.sql.gz"
+        become: yes
+        become_method: sudo
+
+      - name: "See the {{ proddbname }} DB backup"
+        shell: "ls -la {{ homedir }} | grep {{ hostvars['ws1']['datestamp']['stdout'] }}"
+        register: dumpdb
+
+      - debug: var=dumpdb.stdout_lines
+
+      - pause: prompt="Make sure that the {{ proddbname }} DB Backups look good before you continue"
+
+      - name: "Pull the db backup to {{ devdbhost }}"
+        fetch: "src={{ homedir }}{{ proddbname }}{{ hostvars['ws1']['timestamp']['stdout'] }}.sql.gz dest={{ homedir }}{{ proddbname }}{{ hostvars['ws1']['timestamp']['stdout'] }}.sql.gz flat=yes"
+
+- hosts: usvidevdb
+  remote_user: jlouthan
+  vars_files:
+      - vars/vars-deploy-USVI-prod-to-qa-master.yml
+
+  tasks:
+      - name: Push prod db backup to {{ devdbhost }}
+        copy: "src={{ homedir }}{{ proddbname }}{{ hostvars['ws1']['timestamp']['stdout'] }}.sql.gz dest={{ homedir }}{{ proddbname }}{{ hostvars['ws1']['timestamp']['stdout'] }}.sql.gz"
+
+      - name: Backup the QA DB
+        mysql_db: "state=dump name={{ devdbname }} target={{ homedir }}{{ devdbname }}{{ hostvars['ws1']['timestamp']['stdout'] }}.sql.gz"
+        become: yes
+        become_user: sudo
+
+      - name: See the QA DB backup
+        shell: "ls -la {{ homedir }} | grep {{ hostvars['ws1']['datestamp']['stdout'] }}"
+        register: dumpdb
+
+      - debug: var=dumpdb.stdout_lines
+
+      - pause: prompt='Make sure that both the qa db looks good and the prod db backup is waiting for you. If not, hit Ctrl+A to abort. If so, hit Enter to continue.'
+
+      - name: Restore prod db backup to qa db
+        mysql_db: "name={{ devdbname }} state=import target={{ homedir }}{{ proddbname }}{{ hostvars['ws1']['timestamp']['stdout'] }}.sql.gz"
+
+- hosts: usviprodweb1
+  remote_user: jlouthan
+  tasks:
+      - name: Compress files/ on Prod
+        shell: "tar -czvf {{ homedir }}files-{{ prodweb }}.{{ hostvars['ws1']['timestamp']['stdout'] }}.tar.gz -C {{ prodwebfiles }} ."
+        become: yes
+        become_method: sudo
+
+      - name: Pull files/ from Prod to local
+        fetch: "src={{ homedir }}files-{{ prodweb }}.{{ hostvars['ws1']['timestamp']['stdout'] }}.tar.gz dest={{ homedir }}files-{{ prodweb }}.{{ hostvars['ws1']['timestamp']['stdout'] }}.tar.gz"
+
+- hosts: usvidevweb
+  remote_user: jlouthan
+  tasks:
+      - name: Backup current files/ on Staging
+        shell: "mv {{ devwebfiles }} /var/www/sites/{{ devweb }}/sites/default/files{{ hostvars.{{ proddbhost }}.timestamp }}/"
+        become: yes
+        become_user: sudo
+
+        name: Push and uncompress files/ archive to Staging
+        unarchive: "src={{ homedir }}files-{{ prodweb }}.tar.gz dest={{ devwebfiles }} owner=websync group=websync"
+        become: yes
+        become_user: sudo
+        
+        name: Check to see if the directories are restored and the file permissions are legit
+        shell: "ls -la {{ devwebsite }}sites/default/"
+        register: devwebfilescheck
+        become: websync
+        become_user: sudo
+
+      - debug: var=devwebfilescheck.stdout
+
+      - pause: Does the files directory look g2g?

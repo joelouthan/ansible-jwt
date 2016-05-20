@@ -1,0 +1,12 @@
+- hosts: pc11web1:pc11web2
+  remote_user: jlouthan
+  tasks:
+      - name: Restore wp-content/ from QA to Prod
+        unarchive: src=/home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz dest=/var/www/sites/www.whatispc-11.com/ owner=websync group=websync
+        become: yes
+        become_method: sudo
+
+      - name: Restart varnish
+        service: name=varnish state=restarted
+        become: yes
+        become_method: sudo

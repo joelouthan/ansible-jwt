@@ -1,0 +1,79 @@
+---
+- hosts: ws4
+  remote_user: jlouthan
+  tasks:
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=latest
+        become: yes
+        become_method: sudo
+
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup Staging PC11 DB
+        mysql_db: state=dump name=stg_wp_pc11 target=/home/jlouthan/stg_wp_pc11.{{ timestamp.stdout }}.sql.gz
+        become: yes
+        become_method: sudo
+
+      - name: See the stg_wp_pc11 DB backup
+        shell: ls -la /home/jlouthan/ | grep {{ datestamp.stdout }}
+        register: dumpdb
+
+      - debug: var=dumpdb.stdout_lines
+
+      - pause: prompt='Make sure that the stg_wp_pc11 DB Backups look good before you continue'
+
+      - name: Dump QA DB
+        mysql_db: state=dump name=qa_wp_pc11 target=/home/jlouthan/qa_wp_pc11.{{ timestamp.stdout }}.sql.gz
+        become: yes
+        become_method: sudo
+
+      - name: Drop Preprod
+        mysql_db: name=preprod_qa_wp_pc11 state=absent
+        become: yes
+        become_method: sudo
+
+      - name: Create Preprod
+        mysql_db: name=preprod_qa_wp_pc11 state=present
+
+      - name: Restore from QA into Preprod
+        mysql_db: name=preprod_qa_wp_pc11 state=import target=qa_wp_pc11.{{ timestamp.stdout }}.sql.gz
+        become: yes
+        become_method: sudo
+
+      - name: Search and Replace FQDN
+        shell: /usr/local/jwt/Search-Replace-DB/srdb.cli.php -h localhost -n preprod_qa_wp_pc11 -u root -p '' -s 'qa-www.whatispc-11.com' -r 'stg-www.whatispc-11.com'
+        register: replaceqaFQDN
+        become: yes
+        become_method: sudo
+
+      - debug: var=replaceqaFQDN.stdout_lines
+
+      - pause: prompt='Check to make sure that the Search Replace Script did its job. If not Ctrl+A to abort. Otherwise hit Enter to continue.'
+
+      - name: Dump Preprod QA DB
+        mysql_db: name=preprod_qa_wp_pc11 state=dump target=/home/jlouthan/preprod_qa_wp_pc11.sql.gz
+        become: yes
+        become_method: sudo
+
+      - name: Restore from Preprod QA DB into Staging
+        mysql_db: name=stg_wp_pc11 state=import target=/home/jlouthan/preprod_qa_wp_pc11.sql.gz
+        become: yes
+        become_method: sudo
+
+      - name: rsync content files from QA into Staging
+        shell: rsync -av /var/www/qa-www.whatispc-11.com/wp-content/uploads/ /var/www/stg-www.whatispc-11.com/wp-content/uploads/
+        register: rsyncwp-content
+        become_user: websync
+        become_method: sudo
+
+      - debug: var=rsyncwp-content.stdout_lines
+
+      - pause: prompt='Check to see if the rsync went through ok. If not, Ctrl+A to abort. Otherwise, hit Enter to continue.'

@@ -1,0 +1,139 @@
+---
+- hosts: ws4
+  remote_user: jlouthan
+  tasks:
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=latest
+        become: yes
+        become_method: sudo
+
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Dump QA DB into Preprod
+        mysql_db: state=dump name=qa_wp_pc11 target=/home/jlouthan/qa_wp_pc11.{{ timestamp.stdout }}.sql.gz
+        become: yes
+        become_method: sudo
+                                
+      - name: Destroy Preprod DB
+        mysql_db: name=preprod_qa_wp_pc11 state=absent
+        become: yes
+        become_method: sudo
+                                
+      - name: Recreate Preprod DB
+        mysql_db: name=preprod_qa_wp_pc11 state=present
+        become: yes
+        become_method: sudo
+                                                        
+      - name: Restore from QA into Preprod
+        mysql_db: name=preprod_qa_wp_pc11 state=import target=/home/jlouthan/qa_wp_pc11.{{ timestamp.stdout }}.sql.gz
+        become: yes
+        become_method: sudo
+
+      - name: Search and Replace FQDN
+        shell: /usr/local/jwt/Search-Replace-DB/srdb.cli.php -h localhost -n preprod_qa_wp_pc11 -u root -p '' -s 'qa-www.whatispc-11.com' -r 'www.whatispc-11.com'
+        register: replaceqaFQDN
+        become: yes
+        become_method: sudo
+
+      - debug: var=replaceqaFQDN.stdout_lines
+
+      - pause: prompt='Check to make sure that the Search Replace Script did its job. If not Ctrl+A to abort. Otherwise hit Enter to continue.'
+        
+      - name: Dump Preprod DB
+        mysql_db: name=preprod_qa_wp_pc11 state=dump target=/home/jlouthan/preprod_qa_wp_pc11.sql.gz
+        become: yes
+        become_method: sudo
+
+      - name: Pulling Preprod DB
+        fetch: src=/home/jlouthan/preprod_qa_wp_pc11.sql.gz dest=/home/jlouthan/preprod_qa_wp_pc11.sql.gz flat=yes
+
+      - name: Backing up QA's wp-content/
+        shell: tar -czvf /home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz /var/www/qa-www.whatispc-11.com/wp-content/
+
+      - name: Pulling QA's wp-content/ archive
+        fetch: src=/home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz dest=/home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz flat=yes
+
+- hosts: pc11db1
+  remote_user: jlouthan
+  tasks:
+      - name: Install the latest version of MySQL-Python
+        yum: name=MySQL-python state=latest
+        become: yes
+        become_method: sudo
+
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup Prod DB
+        mysql_db: name=prod_pc11 state=dump target=/root/prod_pc11.{{ timestamp.stdout }}.sql.gz
+        become: yes
+        become_method: sudo
+
+      - name: Display Prod DB backup
+        shell: ls -la /root/ | grep {{ datestamp.stdout }}
+        register: proddbbackup
+        become: yes
+        become_method: sudo
+
+      - debug: var=proddbbackup.stdout_lines
+
+      - pause: prompt='Check to make sure that the Prod DB successfully backed up. If not, hit Ctrl+A to abort. If so, hit Enter to continue.'
+
+      - name: Push Preprod DB
+        copy: src=/home/jlouthan/preprod_qa_wp_pc11.sql.gz dest=/home/jlouthan/preprod_qa_wp_pc11.sql.gz
+
+      - name: Import Preprod DB into Prod
+        mysql_db: name=prod_pc11 state=import target=/home/jlouthan/preprod_qa_wp_pc11.sql.gz
+        become: yes
+        become_method: sudo
+
+- hosts: pc11web1:pc11web2
+  remote_user: jlouthan
+  tasks:
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Push QA wp-content/ archive to both Web servers
+        copy: src=/home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz dest=/home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz
+
+      - name: Backup Prod wp-content/ 
+        shell: mv /var/www/sites/www.whatispc-11.com/wp-content/ /var/www/sites/www.whatispc-11.com/wp-content{{ timestamp.stdout }}
+        become: yes
+        become_method: sudo
+
+      - name: Restore wp-content/ from QA to Prod
+        shell: tar -xzvf /home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz /var/www/sites/www.whatispc-11.com/
+        become: yes
+        become_method: sudo
+
+      - name: Correct file permissions
+        file: path=/var/www/sites/www.whatispc-11.com/wp-content/ owner=websync group=websync
+        become: yes
+        become_method: sudo
+
+      - name: Restart varnish
+        service: name=varnish state=restarted
+        become: yes
+        become_method: sudo

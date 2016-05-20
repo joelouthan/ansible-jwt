@@ -1,0 +1,38 @@
+---
+hosts: usviproddb
+remote_user: jlouthan
+vars:
+        homedir: /home/jlouthan/
+        proddbhost: usviproddb
+        proddbname: usvi_drupal
+        devdbhost: usvidevdb
+        devdbname: stg_visitusvi
+        prodwebhost: usviprodweb1
+        prodweb: www.visitusvi.com
+        prodwebfiles: /var/www/sites/{{ prodweb }}/sites/default/files/
+        dewebhost: usvidevweb
+        devweb: stg-www.visitusvi.com
+        devwebfiles: /var/www/sites/{{ devwebfiles }}/sites/default/files/
+        
+tasks:
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Backup and transfer Prod DB to usvidevdb
+        include: deploy-USVI-prod-to-stg-01.yml
+
+      - name: Backup stg db and restore from prod db into stg db
+        include: deploy-USVI-prod-to-stg-02.yml
+
+      - name: Archives and transfer Prod files/ to local
+        include: deploy-USVI-prod-to-stg-03.yml
+
+      - name: Restore to QA files/
+        include: deploy-USVI-prod-to-stg-04.yml

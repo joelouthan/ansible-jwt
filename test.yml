@@ -1,0 +1,36 @@
+---
+- hosts: pc11web1:pc11web2
+  remote_user: jlouthan
+  tasks:
+      - name: Get current timestamp
+        local_action: command bash -c 'date +%Y-%m-%d.%H%M'
+        register: timestamp
+        run_once: true
+
+      - name: Get current datestamp
+        local_action: command bash -c 'date +%Y-%m-%d'
+        register: datestamp
+        run_once: true
+
+      - name: Push QA wp-content/ archive to both Web servers
+        copy: src=/home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz dest=/home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz
+
+      - name: Backup Prod wp-content/
+        shell: mv /var/www/sites/www.whatispc-11.com/wp-content/ /var/www/sites/www.whatispc-11.com/wp-content{{ timestamp.stdout }}
+        become: yes
+        become_method: sudo
+
+      - name: Restore wp-content/ from QA to Prod
+        shell: tar -xzvf /home/jlouthan/qa-www.whatispc-11.com-wp-content.tar.gz /var/www/sites/www.whatispc-11.com/
+        become: yes
+        become_method: sudo
+
+      - name: Correct file permissions
+        file: path=/var/www/sites/www.whatispc-11.com/wp-content/ owner=websync group=websync
+        become: yes
+        become_method: sudo
+
+      - name: Restart varnish
+        service: name=varnish state=restarted
+        become: yes
+        become_method: sudo
