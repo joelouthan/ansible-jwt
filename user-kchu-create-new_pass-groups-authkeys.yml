@@ -1,0 +1,26 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+        - name: Create users
+          user: name={{  item.name  }} state=present groups=miriumwheel password={{  item.pass  }}  shell='/bin/bash'
+          with_items:
+                 - { name: 'kchu' , pass: '$6$rounds=656000$W.VLdMEi0VbKVxBL$Mmwa1Fz6VDeasKnbXhcUb8RTMCoBXIzkzlAT.gdAR3kHBjGaLB7Mu1Ba8wbPg5EvMRKbcKzKkYP6UiaP.u.pq0' }
+                
+        - name: Expire account
+          command: "chage -I 30 -M 60 {{  item  }}"
+          with_items:
+            - kchu
+
+        - name: Create .ssh directory
+          file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
+          with_items:
+            - kchu
+
+        - name: Copy authkeys to .ssh dirs
+          copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0700
+          with_items:
+            - kchu

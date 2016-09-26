@@ -1,0 +1,34 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+        - name: Create new wheel group
+          group: name=miriumwheel state=present
+            
+        - name: Create users
+          user: name={{  item.name  }} state=present groups=miriumwheel password={{  item.pass  }}  shell='/bin/bash'
+          with_items:
+                 - { name: 'bbeecroft' , pass: '$6$rounds=656000$gEdm72GaZEJcK2U5$7rG44zjhD9AcyBDoRWQze7hUU/T0y.rRoadGtkSeX96Qkg6UAF6UKjFAyKrWfZcROjpORDLGqolABZw1OV5nY0' }
+                 - { name: 'mhiivala' , pass: '$6$rounds=656000$.roRn0pxvwiynr1s$wxyiQy0Ya4vXS6PHBfKJGuJIYW4S.gl2rNpjYo2ue3xzVvbpzhLyZrJ1UrvBxWjoPuj29uqSDRyMuft8FdSRm.' }
+                 - { name: 'kmasud' , pass: '$6$rounds=656000$K0y/6a3s1DEndwKP$hUQgkrRJL6/gDjY/rO/32KDt.9Xf5meGrCsVO4i7r18/5wTIn9akZGJcW9yDfczc.BNSJdOxT5.2LmxkyR/K40' }
+                
+        - name: Expire account
+          command: "chage -I 30 -M 60 {{  item  }}"
+          with_items:
+            - bbeecroft
+            - mhiivala
+            - kmasud
+
+        - name: Create .ssh directory
+          file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
+          with_items:
+            - bbeecroft
+            - mhiivala
+            - kmasud
+
+        - name: Copy authkeys to .ssh dirs
+          copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
+          with_items:

@@ -1,0 +1,23 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name: Create account
+        user: name=secops shell=/bin/bash groups=wheel home=/home/secops/
+        become: yes
+        become_method: sudo
+
+      - name: Unexpire account
+        user: name=secops expires=0
+        become: yes
+        become_method: sudo
+
+      - name: Copy .ssh directory
+        copy:
+                src=/home/jlouthan/Playbooks/home/secops/.ssh/
+                dest=/home/secops/.ssh/ 
+                owner=secops 
+                group=secops 
+                directory_mode=744
+        become: yes
+        become_method: sudo

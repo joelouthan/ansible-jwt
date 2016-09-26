@@ -1,0 +1,16 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  tasks:
+      - name: Remove keys
+        command: "rm -f /home/{{ item }}/.ssh/authorized_keys"
+        with_items:
+              - myoussef
+              - gstringer
+              - mhowell
+              - pbailey
+        remote_user: jlouthan
+        become: yes
+        become_method: sudo 

@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: ftp2
   remote_user: jlouthan
   tasks:
       - name:  Get expiration information for all accounts
