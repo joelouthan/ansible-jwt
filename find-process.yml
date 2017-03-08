@@ -1,0 +1,11 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  tasks:
+      - name:  Find the process
+        shell: "ps ef | grep mysql | awk '{ print $7 }'"
+        register: ps
+        become: yes
+        become_method: sudo
+
+      - debug: var=ps.stdout_lines

@@ -1,0 +1,11 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  tasks:
+      - name:  Find the process
+        shell: "ls -la /var/lib/mysql/ | grep jira | awk '{ print $9 }'"
+        register: db
+        become: yes
+        become_method: sudo
+
+      - debug: var=db.stdout_lines

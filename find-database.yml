@@ -1,0 +1,12 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  
+  tasks:
+      - name:  Find the process
+        shell: "ls -la /var/lib/mysql/ | grep qa_elc"
+        register: db
+
+      - debug: var=db.stdout_lines
