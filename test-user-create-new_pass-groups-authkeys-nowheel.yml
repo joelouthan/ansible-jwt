@@ -1,26 +1,26 @@
 ---
-- hosts: all
+- hosts: aem
   remote_user: jlouthan
   become: yes
   become_method: sudo
 
   tasks:
         - name: Create users
-          user: name={{  item.name  }} state=present groups=miriumwheel password={{  item.pass  }}  shell='/bin/bash'
+          user: name={{  item.name  }} state=present password={{  item.pass  }}  shell='/bin/bash'
           with_items:
-                 - { name: 'rchavez' , pass: '$6$rounds=656000$z1BQWWZI.dpe0967$fRZFwqJwkpSMl9Ecm3lHSBL8Onzz1vIsh7kzMkniq7BpcGrqKrRhUJavM.Br8Jc2Dk3/1PkrmmefPC8s4l36V/' }
+                 - { name: 'nicholaus.perez' , pass: '$6$rounds=656000$DXay8fNQ/X6iq4kO$a9XV2gh8hEUQgtxn8KwvdIUigRyqKN8uXuDu9HnkoMFLdsjAPzCp1yQK4znhG4xK3GbD6zGJsQhJzGt0s7SQx0' }
                 
         - name: Expire account
           command: "chage -I 30 -M 60 {{  item  }}"
           with_items:
-            - rchavez
+            - nicholaus.perez
 
         - name: Create .ssh directory
           file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
           with_items:
-            - rchavez
+            - nicholaus.perez
 
         - name: Copy authkeys to .ssh dirs
           copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
           with_items:
-            - rchavez
+            - nicholaus.perez

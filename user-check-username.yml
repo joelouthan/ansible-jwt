@@ -1,0 +1,11 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  tasks:
+      - name: Check usernames
+        command: grep bahamat /etc/passwd
+        register: wheel
+        become: yes
+        become_method: sudo
+
+      - debug: var=wheel.stdout_lines

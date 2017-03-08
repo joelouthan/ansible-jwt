@@ -1,0 +1,14 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  
+  tasks:
+      - name: Find file
+        stat: path=/root/.forward
+        register: fwd
+
+      - name: Copy .file if it does not exist
+        copy: src=/home/jlouthan/Playbooks/conf/.forward dest=/root/.forward owner=root group=root mode=0600
+        when: fwd.stat.exists == False

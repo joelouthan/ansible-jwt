@@ -1,17 +1,16 @@
 ---
 - hosts: proxy1:proxy2:proxy3:proxy4
   remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  
   tasks:
       - name: Restart varnish
         service: name=varnish state=restarted
-        become: yes
-        become_method: sudo
 
       - name: Check process
-        command: "ps -eafl | grep varnish | grep -v grep | egrep -i 'varnishd|log|nsca'"
+        shell: ps -e | grep varnish | awk '{print $4}'
         register: procvarnish
-        become: yes
-        become_method: sudo
 
       - debug: var=procvarnish.stdout_lines
 

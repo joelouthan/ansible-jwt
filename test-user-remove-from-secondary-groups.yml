@@ -1,0 +1,9 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  vars:
+  tasks:
+      - name: Remove user from secondary groups
+        user: name=rchavez groups=
+        become: yes
+        become_method: sudo 

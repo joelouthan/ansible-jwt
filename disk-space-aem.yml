@@ -1,0 +1,12 @@
+---
+- hosts: aem
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Get Disk Space information on all mounts
+        shell: 'df -h'
+        register: disk_free
+
+      - debug: var=disk_free.stdout_lines

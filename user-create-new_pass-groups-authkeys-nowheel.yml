@@ -1,26 +1,26 @@
 ---
-- hosts: all
+- hosts: ws1:aem
   remote_user: jlouthan
   become: yes
   become_method: sudo
 
   tasks:
         - name: Create users
-          user: name={{  item.name  }} state=present groups=miriumwheel password={{  item.pass  }}  shell='/bin/bash'
+          user: name={{  item.name  }} state=present password={{  item.pass  }}  shell='/bin/bash'
           with_items:
-                 - { name: 'rchavez' , pass: '$6$rounds=656000$z1BQWWZI.dpe0967$fRZFwqJwkpSMl9Ecm3lHSBL8Onzz1vIsh7kzMkniq7BpcGrqKrRhUJavM.Br8Jc2Dk3/1PkrmmefPC8s4l36V/' }
+                 - { name: 'bahamat' , pass: '$6$rounds=656000$pT7/upjCdVTuPsPk$oG4wirpBNhjD52SCtkWlrf9OaMYyI/Rxb9AfhngGHq1rqkwhj6.K0i5wxLU43xNCR2OUSPLM7M2a.RvPmT.xG0' }
                 
         - name: Expire account
           command: "chage -I 30 -M 60 {{  item  }}"
           with_items:
-            - rchavez
+            - bahamat
 
         - name: Create .ssh directory
           file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
           with_items:
-            - rchavez
+            - bahamat
 
         - name: Copy authkeys to .ssh dirs
           copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
           with_items:
-            - rchavez
+            - bahamat

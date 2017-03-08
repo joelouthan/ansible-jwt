@@ -1,0 +1,13 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  
+  tasks:
+      - name: Find file
+        stat: path=/root/.forward
+        register: fwd
+
+      - debug: msg=".forward file found here"
+        when: fwd.stat.exists == True

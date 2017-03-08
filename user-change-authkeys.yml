@@ -1,0 +1,14 @@
+---
+- hosts: aem
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+        - name: Remove current authkey file
+          file: path=/home/nicholaus.perez/.ssh/authorized_keys state=absent
+
+        - name: Copy authkeys to .ssh dirs
+          copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
+          with_items:
+            - nicholaus.perez

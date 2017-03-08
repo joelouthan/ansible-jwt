@@ -4,20 +4,11 @@
   become: yes
   become_method: sudo
   tasks:
-      - name: Lock account
-        command: passwd -l jbesadesky
-        remote_user: jlouthan
-        become: yes
-        become_method: sudo
+      - name: Lock password (Note - this doesn't prevent SSHKey access)
+        command: passwd -l srichardson
 
-      - name: Expire account
-        user: name=jbesadesky expires=1
-        remote_user: jlouthan
-        become: yes
-        become_method: sudo
-       
+      - name: Expire account to Jan 2 1970 and remove from all secondary groups
+        user: name=srichardson expires=1 groups=
+
       - name: Remove keys
-        command: rm -f /home/jbesadesky/.ssh/authorized_keys
-        remote_user: jlouthan
-        become: yes
-        become_method: sudo 
+        file: path=/home/srichardson/.ssh/authorized_keys state=absent

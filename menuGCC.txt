@@ -6,4 +6,6 @@ IT09.01-account-settings-for-users-usvi.yml
 IT09.01-account-settings-for-users.yml
 IT10.02-check-wheel-members.yml
 IT11.04-list-disabled-locked-accounts.yml
+IT18.03b-list-authorized-usernames.yml
 test-IT09.01-account-settings-for-users.yml
+test-IT18.03b-list-authorized-usernames.yml

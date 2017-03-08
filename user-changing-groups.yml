@@ -1,5 +1,5 @@
 ---
-- hosts: ws3
+- hosts: all
   remote_user: jlouthan
   become: yes
   become_method: sudo
@@ -12,7 +12,7 @@
         group: name=mirumwheel state=present
 
       - name: Add the Mirum guys to mirumwheel group
-        user: name={{  item.name  }} state=present groups=mirumwheel password={{  item.pass  }}  shell='/bin/bash'
+        user: name={{  item  }} state=present groups=mirumwheel 
         with_items:
                - bbeecroft
                - mhiivala
