@@ -6,7 +6,7 @@
   
   tasks:
       - name:  Find the process
-        shell: "ls -la /var/lib/mysql/ | grep qa_elc"
+        shell: "ls -la /var/lib/mysql/ | grep cmt"
         register: db
 
       - debug: var=db.stdout_lines
