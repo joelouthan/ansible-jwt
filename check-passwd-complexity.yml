@@ -1,0 +1,12 @@
+---
+- hosts: prod
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Check password complexity requirements
+        shell: 'cat /etc/pam.d/system-auth | grep -i password'
+        register: foo
+
+      - debug: var=foo.stdout_lines

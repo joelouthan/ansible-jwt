@@ -1,0 +1,12 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Get Disk Space information on all mounts
+        shell: 'uptime'
+        register: uptime
+
+      - debug: var=uptime.stdout_lines

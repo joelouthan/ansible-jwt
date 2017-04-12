@@ -1,0 +1,12 @@
+---
+- hosts: prod
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Get Disk Space information on all mounts
+        shell: 'cat /etc/ssh/sshd_config | grep -i PermitRootLogin'
+        register: sshdPermitRootLogin
+
+      - debug: var=sshdPermitRootLogin.stdout_lines

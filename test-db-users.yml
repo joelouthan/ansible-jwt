@@ -1,0 +1,12 @@
+---
+- hosts: ws1:ws3
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name: Listing of database user names 
+        shell: "echo 'select User,Host from mysql.user;' | mysql"
+        register: foo
+
+      - debug: var=foo.stdout_lines

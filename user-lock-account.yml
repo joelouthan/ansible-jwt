@@ -5,10 +5,10 @@
   become_method: sudo
   tasks:
       - name: Lock password (Note - this doesn't prevent SSHKey access)
-        command: passwd -l srichardson
+        command: passwd -l pharvey
 
       - name: Expire account to Jan 2 1970 and remove from all secondary groups
-        user: name=srichardson expires=1 groups=
+        user: name=pharvey expires=1 groups=
 
       - name: Remove keys
-        file: path=/home/srichardson/.ssh/authorized_keys state=absent
+        file: path=/home/pharvey/.ssh/authorized_keys state=absent
