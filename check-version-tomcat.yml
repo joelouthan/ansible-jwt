@@ -1,0 +1,18 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name: Update the Locate DB
+        shell: 'updatedb'
+
+      - name: Find all instances for catalina.jar and place them into a file
+        shell: 'find /opt -name catalina.jar > /root/list-tomcat'
+
+      - name: Check tomcat version(s)
+        shell: "for i in `cat /root/list-tomcat`; do java -cp $i org.apache.catalina.util.ServerInfo ; done"
+        register: version
+
+      - debug: var=version.stdout_lines
