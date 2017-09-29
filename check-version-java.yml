@@ -1,0 +1,12 @@
+---
+- hosts: ws4:app27
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Get Disk Space information on all mounts
+        shell: 'java -version'
+        register: version
+
+      - debug: var=version.stdout_lines

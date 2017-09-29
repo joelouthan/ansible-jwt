@@ -1,0 +1,8 @@
+---
+- hosts: ws4
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  tasks:
+      - name: Restore authorized_keys
+        command: "rm ~ckemp/.ssh/authorized_keys ; mv ~ckemp/.ssh/authorized_lock ~ckemp/.ssh/authorized_keys ; chmod 700 ~ckemp/.ssh/authorized_keys ; chown ckemp:ckemp ~ckemp/.ssh/authorized_keys"

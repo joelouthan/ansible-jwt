@@ -1,0 +1,15 @@
+---
+- hosts: ws3
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name: Install libpwquality
+        yum: name=libpwquality state=latest
+
+      - name: Backup system-auth-ac
+        shell: 'cp /etc/pam.d/system-auth-ac /root/Backup/system-auth-ac`date +%Y%m%d.%H%M`'
+
+      - name: Comment out cracklib line and insert pwquality line after it
+        shell: "grep -q pam_cracklib.so /etc/pam.d/system-auth-ac && sed -e '/pam_cracklib.so/ s/^#*/#/' -i /etc/pam.d/system-auth-ac && sed -i '/pam_cracklib.so/a password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3 type= remember=40' /etc/pam.d/system-auth-ac"

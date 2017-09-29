@@ -1,17 +1,19 @@
 ---
-- hosts: all
+- hosts: web1
   remote_user: jlouthan
   become: yes
   become_method: sudo
   tasks:
       - name: Unlock account
-        command: passwd -u secops
+        command: passwd -u ckemp
 
-      - name: Delete password
-        command: passwd -d secops
+      - name: Expire account
+        command: "chage -I 30 -M 60 -E -1 ckemp"
 
-      - name: Unexpire account
-        user: name=secops expires=0
+      - name: Change password
+        user: name={{  item.name  }} password={{  item.pass  }}
+        with_items:
+           - { name: 'ckemp', pass: '$6$rounds=656000$dWwjKZh0qafz4VWC$4LCdFujDs0KV7juEu51ITi3TuS/.yaPKhkm27cL51oqm/2LXMnaL.v9Z3fbL9ZsXDI9Qf2OBnGsehfLeozvOk1' }
 
       - name: Copy authorized_keys
-        copy: src=/home/secops/.ssh/authorized_keys dest=/home/secops/.ssh/authorized_keys owner=secops group=secops mode="u+rwx,g-rwx,o-rwx"
+        copy: src=authkeys/ckemp dest=/home/ckemp/.ssh/authorized_keys owner=ckemp group=ckemp mode="u+rwx,g-rwx,o-rwx"

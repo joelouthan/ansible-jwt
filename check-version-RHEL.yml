@@ -1,0 +1,12 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name: Check the RHEL version
+        shell: 'cat /etc/redhat-release'
+        register: version
+
+      - debug: var=version.stdout_lines

@@ -6,21 +6,21 @@
 
   tasks:
         - name: Create users
-          user: name={{  item.name  }} state=present groups=miriumwheel password={{  item.pass  }}  shell='/bin/bash'
+          user: name={{  item.name  }} state=present groups=mirumwheel password={{  item.pass  }}  shell='/bin/bash'
           with_items:
-                 - { name: 'rchavez' , pass: '$6$rounds=656000$z1BQWWZI.dpe0967$fRZFwqJwkpSMl9Ecm3lHSBL8Onzz1vIsh7kzMkniq7BpcGrqKrRhUJavM.Br8Jc2Dk3/1PkrmmefPC8s4l36V/' }
+                 - { name: 'lleung' , pass: '$6$rounds=656000$.A/xjojfdiwg9hXJ$0w8xwOkUFi3a50acUBwgI0SIY.dmUisGwxLkmwbQr3PJkBJd90729.0ALhNq3lLovmp.iCPB6IdpTVT4JiTBH/' }
                 
         - name: Expire account
-          command: "chage -I 30 -M 60 {{  item  }}"
+          command: 'chage -I 7 -M 60 -E "2017-07-25" -W 3 {{  item  }}'
           with_items:
-            - rchavez
+            - lleung
 
         - name: Create .ssh directory
           file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
           with_items:
-            - rchavez
+            - lleung
 
         - name: Copy authkeys to .ssh dirs
           copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
           with_items:
-            - rchavez
+            - lleung

@@ -1,0 +1,11 @@
+---
+- hosts: web1
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  tasks:
+
+      - name: Adding ckemp back to wheel
+        user: name={{  item  }} state=present groups=wheel
+        with_items:
+               - ckemp

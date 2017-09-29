@@ -1,0 +1,294 @@
+
+PLAY [all] *********************************************************************
+
+TASK [setup] *******************************************************************
+ok: [ftp]
+ok: [usvi2devweb1]
+ok: [usvi2prodweb1]
+ok: [pwn]
+ok: [usvi2prodweb2]
+ok: [ftp1]
+ok: [ftp2]
+ok: [web2]
+ok: [web1]
+ok: [web3]
+ok: [qaweb1]
+ok: [db2]
+ok: [db2-ep]
+ok: [db1-ep]
+ok: [qaweb2]
+ok: [vm4]
+ok: [db1]
+ok: [rep1]
+ok: [vm6]
+ok: [ws1]
+ok: [vm7]
+ok: [stgweb2-ep]
+ok: [app28]
+ok: [ws4]
+fatal: [ws3]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: ssh: connect to host ws3 port 22: No route to host\r\n", "unreachable": true}
+ok: [vm5]
+ok: [pc11db1]
+ok: [stgdb-ep]
+ok: [stagdb1]
+ok: [app27]
+ok: [dev-author]
+ok: [dev-pub]
+ok: [pc11web1]
+ok: [pc11web2]
+ok: [slavedb-ep]
+ok: [stgweb]
+ok: [web1-ep]
+ok: [dev-aem]
+ok: [web2-ep]
+
+TASK [Check for samba] *********************************************************
+changed: [ftp]
+changed: [db1-ep]
+changed: [db2-ep]
+changed: [usvi2prodweb1]
+changed: [usvi2prodweb2]
+changed: [usvi2devweb1]
+changed: [pwn]
+changed: [db1]
+changed: [ftp2]
+changed: [ftp1]
+changed: [web1]
+changed: [db2]
+changed: [web2]
+changed: [web3]
+changed: [qaweb1]
+changed: [vm4]
+changed: [rep1]
+changed: [qaweb2]
+changed: [stgdb-ep]
+changed: [stgweb2-ep]
+changed: [vm7]
+changed: [vm5]
+changed: [ws4]
+changed: [app28]
+changed: [vm6]
+changed: [stagdb1]
+changed: [slavedb-ep]
+changed: [pc11db1]
+changed: [ws1]
+changed: [app27]
+changed: [pc11web2]
+changed: [dev-author]
+changed: [dev-pub]
+changed: [stgweb]
+changed: [pc11web1]
+changed: [web1-ep]
+changed: [web2-ep]
+changed: [dev-aem]
+
+TASK [debug] *******************************************************************
+ok: [usvi2prodweb2] => {
+    "samba.stdout_lines": []
+}
+ok: [usvi2prodweb1] => {
+    "samba.stdout_lines": []
+}
+ok: [ftp2] => {
+    "samba.stdout_lines": []
+}
+ok: [ftp1] => {
+    "samba.stdout_lines": []
+}
+ok: [ftp] => {
+    "samba.stdout_lines": []
+}
+ok: [db2-ep] => {
+    "samba.stdout_lines": []
+}
+ok: [db1] => {
+    "samba.stdout_lines": []
+}
+ok: [db1-ep] => {
+    "samba.stdout_lines": []
+}
+ok: [db2] => {
+    "samba.stdout_lines": []
+}
+ok: [vm4] => {
+    "samba.stdout_lines": []
+}
+ok: [web1] => {
+    "samba.stdout_lines": []
+}
+ok: [rep1] => {
+    "samba.stdout_lines": []
+}
+ok: [web2] => {
+    "samba.stdout_lines": []
+}
+ok: [web3] => {
+    "samba.stdout_lines": []
+}
+ok: [qaweb2] => {
+    "samba.stdout_lines": []
+}
+ok: [stgweb2-ep] => {
+    "samba.stdout_lines": []
+}
+ok: [stgdb-ep] => {
+    "samba.stdout_lines": []
+}
+ok: [qaweb1] => {
+    "samba.stdout_lines": []
+}
+ok: [pwn] => {
+    "samba.stdout_lines": []
+}
+ok: [vm6] => {
+    "samba.stdout_lines": []
+}
+ok: [vm5] => {
+    "samba.stdout_lines": []
+}
+ok: [vm7] => {
+    "samba.stdout_lines": []
+}
+ok: [stagdb1] => {
+    "samba.stdout_lines": []
+}
+ok: [pc11db1] => {
+    "samba.stdout_lines": []
+}
+ok: [ws1] => {
+    "samba.stdout_lines": []
+}
+ok: [ws4] => {
+    "samba.stdout_lines": []
+}
+ok: [slavedb-ep] => {
+    "samba.stdout_lines": []
+}
+ok: [pc11web2] => {
+    "samba.stdout_lines": []
+}
+ok: [pc11web1] => {
+    "samba.stdout_lines": []
+}
+ok: [app28] => {
+    "samba.stdout_lines": []
+}
+ok: [dev-author] => {
+    "samba.stdout_lines": []
+}
+ok: [dev-aem] => {
+    "samba.stdout_lines": []
+}
+ok: [web1-ep] => {
+    "samba.stdout_lines": []
+}
+ok: [dev-pub] => {
+    "samba.stdout_lines": []
+}
+ok: [usvi2devweb1] => {
+    "samba.stdout_lines": []
+}
+ok: [app27] => {
+    "samba.stdout_lines": []
+}
+ok: [web2-ep] => {
+    "samba.stdout_lines": []
+}
+ok: [stgweb] => {
+    "samba.stdout_lines": []
+}
+
+TASK [Check to see if TCP 445 is open] *****************************************
+fatal: [db1-ep]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.100748", "end": "2017-06-27 16:11:54.742816", "failed": true, "rc": 1, "start": "2017-06-27 16:11:54.642068", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [ftp]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.022844", "end": "2017-06-27 15:11:54.815930", "failed": true, "rc": 1, "start": "2017-06-27 15:11:54.793086", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [db2-ep]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.078674", "end": "2017-06-27 16:11:54.848116", "failed": true, "rc": 1, "start": "2017-06-27 16:11:54.769442", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [usvi2prodweb1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.009754", "end": "2017-06-27 20:11:55.260971", "failed": true, "rc": 1, "start": "2017-06-27 20:11:55.251217", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [usvi2devweb1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.005428", "end": "2017-06-27 20:11:55.296705", "failed": true, "rc": 1, "start": "2017-06-27 20:11:55.291277", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [usvi2prodweb2]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.009457", "end": "2017-06-27 20:11:55.330780", "failed": true, "rc": 1, "start": "2017-06-27 20:11:55.321323", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [pwn]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.005209", "end": "2017-06-27 20:11:55.483090", "failed": true, "rc": 1, "start": "2017-06-27 20:11:55.477881", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [ftp2]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.061423", "end": "2017-06-27 15:11:55.537540", "failed": true, "rc": 1, "start": "2017-06-27 15:11:55.476117", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [db1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.031433", "end": "2017-06-27 15:11:55.610341", "failed": true, "rc": 1, "start": "2017-06-27 15:11:55.578908", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [ftp1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.040727", "end": "2017-06-27 15:11:55.644411", "failed": true, "rc": 1, "start": "2017-06-27 15:11:55.603684", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+changed: [db2]
+fatal: [web1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.028280", "end": "2017-06-27 15:11:56.722083", "failed": true, "rc": 1, "start": "2017-06-27 15:11:56.693803", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [rep1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.027696", "end": "2017-06-27 15:11:56.744308", "failed": true, "rc": 1, "start": "2017-06-27 15:11:56.716612", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [web2]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.026168", "end": "2017-06-27 15:11:56.773295", "failed": true, "rc": 1, "start": "2017-06-27 15:11:56.747127", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [vm4]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.083240", "end": "2017-06-27 15:11:56.736715", "failed": true, "rc": 1, "start": "2017-06-27 15:11:56.653475", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [web3]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.029656", "end": "2017-06-27 15:11:56.826133", "failed": true, "rc": 1, "start": "2017-06-27 15:11:56.796477", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [qaweb1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.036779", "end": "2017-06-27 15:11:56.982414", "failed": true, "rc": 1, "start": "2017-06-27 15:11:56.945635", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+changed: [qaweb2]
+fatal: [stgdb-ep]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.087131", "end": "2017-06-27 16:19:58.788346", "failed": true, "rc": 1, "start": "2017-06-27 16:19:58.701215", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [stgweb2-ep]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.028823", "end": "2017-06-27 16:11:57.946267", "failed": true, "rc": 1, "start": "2017-06-27 16:11:57.917444", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [app28]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.010941", "end": "2017-06-27 15:11:58.403203", "failed": true, "rc": 1, "start": "2017-06-27 15:11:58.392262", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [ws4]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.015237", "end": "2017-06-27 15:11:58.478549", "failed": true, "rc": 1, "start": "2017-06-27 15:11:58.463312", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [slavedb-ep]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.071402", "end": "2017-06-27 20:33:10.259347", "failed": true, "rc": 1, "start": "2017-06-27 20:33:10.187945", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [ws1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.029221", "end": "2017-06-27 15:11:58.569198", "failed": true, "rc": 1, "start": "2017-06-27 15:11:58.539977", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [vm5]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.021839", "end": "2017-06-27 15:11:58.623898", "failed": true, "rc": 1, "start": "2017-06-27 15:11:58.602059", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [vm6]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.021445", "end": "2017-06-27 15:11:58.612268", "failed": true, "rc": 1, "start": "2017-06-27 15:11:58.590823", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [vm7]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.017428", "end": "2017-06-27 15:11:58.649434", "failed": true, "rc": 1, "start": "2017-06-27 15:11:58.632006", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [stagdb1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.040080", "end": "2017-06-27 15:11:58.681912", "failed": true, "rc": 1, "start": "2017-06-27 15:11:58.641832", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [pc11db1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.005168", "end": "2017-06-27 20:11:59.404936", "failed": true, "rc": 1, "start": "2017-06-27 20:11:59.399768", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [app27]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.015614", "end": "2017-06-27 15:11:59.849751", "failed": true, "rc": 1, "start": "2017-06-27 15:11:59.834137", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [stgweb]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.114705", "end": "2017-06-27 16:12:00.026654", "failed": true, "rc": 1, "start": "2017-06-27 16:11:59.911949", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [dev-author]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.006325", "end": "2017-06-27 20:12:00.564298", "failed": true, "rc": 1, "start": "2017-06-27 20:12:00.557973", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [dev-pub]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.006101", "end": "2017-06-27 20:12:00.678968", "failed": true, "rc": 1, "start": "2017-06-27 20:12:00.672867", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [pc11web2]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.004267", "end": "2017-06-27 20:12:00.722120", "failed": true, "rc": 1, "start": "2017-06-27 20:12:00.717853", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [pc11web1]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.004899", "end": "2017-06-27 20:12:01.089070", "failed": true, "rc": 1, "start": "2017-06-27 20:12:01.084171", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [web2-ep]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.046220", "end": "2017-06-27 16:12:01.255062", "failed": true, "rc": 1, "start": "2017-06-27 16:12:01.208842", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [web1-ep]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.108830", "end": "2017-06-27 16:12:01.271940", "failed": true, "rc": 1, "start": "2017-06-27 16:12:01.163110", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+fatal: [dev-aem]: FAILED! => {"changed": true, "cmd": "netstat -tunlp | grep 445", "delta": "0:00:00.005105", "end": "2017-06-27 20:12:01.833113", "failed": true, "rc": 1, "start": "2017-06-27 20:12:01.828008", "stderr": "", "stdout": "", "stdout_lines": [], "warnings": []}
+
+TASK [debug] *******************************************************************
+ok: [db2] => {
+    "tcpopen.stdout_lines": [
+        "tcp        0      0 0.0.0.0:45445               0.0.0.0:*                   LISTEN      12889/rpc.mountd    "
+    ]
+}
+ok: [qaweb2] => {
+    "tcpopen.stdout_lines": [
+        "udp        0      0 0.0.0.0:44511               0.0.0.0:*                               41042/snmpd         "
+    ]
+}
+	to retry, use: --limit @/home/jlouthan/Playbooks/check-wannacry.retry
+
+PLAY RECAP *********************************************************************
+app27                      : ok=3    changed=1    unreachable=0    failed=1   
+app28                      : ok=3    changed=1    unreachable=0    failed=1   
+db1                        : ok=3    changed=1    unreachable=0    failed=1   
+db1-ep                     : ok=3    changed=1    unreachable=0    failed=1   
+db2                        : ok=5    changed=2    unreachable=0    failed=0   
+db2-ep                     : ok=3    changed=1    unreachable=0    failed=1   
+dev-aem                    : ok=3    changed=1    unreachable=0    failed=1   
+dev-author                 : ok=3    changed=1    unreachable=0    failed=1   
+dev-pub                    : ok=3    changed=1    unreachable=0    failed=1   
+ftp                        : ok=3    changed=1    unreachable=0    failed=1   
+ftp1                       : ok=3    changed=1    unreachable=0    failed=1   
+ftp2                       : ok=3    changed=1    unreachable=0    failed=1   
+pc11db1                    : ok=3    changed=1    unreachable=0    failed=1   
+pc11web1                   : ok=3    changed=1    unreachable=0    failed=1   
+pc11web2                   : ok=3    changed=1    unreachable=0    failed=1   
+pwn                        : ok=3    changed=1    unreachable=0    failed=1   
+qaweb1                     : ok=3    changed=1    unreachable=0    failed=1   
+qaweb2                     : ok=5    changed=2    unreachable=0    failed=0   
+rep1                       : ok=3    changed=1    unreachable=0    failed=1   
+slavedb-ep                 : ok=3    changed=1    unreachable=0    failed=1   
+stagdb1                    : ok=3    changed=1    unreachable=0    failed=1   
+stgdb-ep                   : ok=3    changed=1    unreachable=0    failed=1   
+stgweb                     : ok=3    changed=1    unreachable=0    failed=1   
+stgweb2-ep                 : ok=3    changed=1    unreachable=0    failed=1   
+usvi2devweb1               : ok=3    changed=1    unreachable=0    failed=1   
+usvi2prodweb1              : ok=3    changed=1    unreachable=0    failed=1   
+usvi2prodweb2              : ok=3    changed=1    unreachable=0    failed=1   
+vm4                        : ok=3    changed=1    unreachable=0    failed=1   
+vm5                        : ok=3    changed=1    unreachable=0    failed=1   
+vm6                        : ok=3    changed=1    unreachable=0    failed=1   
+vm7                        : ok=3    changed=1    unreachable=0    failed=1   
+web1                       : ok=3    changed=1    unreachable=0    failed=1   
+web1-ep                    : ok=3    changed=1    unreachable=0    failed=1   
+web2                       : ok=3    changed=1    unreachable=0    failed=1   
+web2-ep                    : ok=3    changed=1    unreachable=0    failed=1   
+web3                       : ok=3    changed=1    unreachable=0    failed=1   
+ws1                        : ok=3    changed=1    unreachable=0    failed=1   
+ws3                        : ok=0    changed=0    unreachable=1    failed=0   
+ws4                        : ok=3    changed=1    unreachable=0    failed=1   
+

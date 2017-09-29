@@ -3,7 +3,7 @@
   remote_user: jlouthan
   tasks:
       - name:  Get expiration information for all accounts
-        shell: 'ls -la /var/www/ | grep rmi'
+        shell: 'ls -la /var/www/ | grep dmpreview.marines.com'
         register: find
         become: yes
         become_method: sudo

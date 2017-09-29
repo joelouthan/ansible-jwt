@@ -1,0 +1,18 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name: Check for samba
+        shell: "`which yum` list installed smb | grep smb | awk '{print $2}' | cut -d'-' -f1"
+        register: samba
+
+      - debug: var=samba.stdout_lines
+
+      - name: Check to see if TCP 445 is open
+        shell: netstat -tunlp | grep 445
+        register: tcpopen
+
+      - debug: var=tcpopen.stdout_lines
