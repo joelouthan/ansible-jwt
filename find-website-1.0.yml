@@ -1,9 +1,9 @@
 ---
-- hosts: all
+- hosts: all:!usmc8
   remote_user: jlouthan
   tasks:
       - name:  Get expiration information for all accounts
-        shell: 'ls -la /var/www/ | grep dmpreview.marines.com'
+        shell: 'ls -la /var/www/ | grep cmt.marines.com'
         register: find
         become: yes
         become_method: sudo

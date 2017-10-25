@@ -1,17 +1,17 @@
 ---
-- hosts: all
+- hosts: usvi8
   remote_user: jlouthan
   become: yes
   become_method: sudo
   tasks:
       - name: Unlock account
-        command: passwd -u bbeecroft
+        command: passwd -u ckemp
 
       - name: Unexpire account
-        user: name=bbeecroft expires=0
+        user: name=ckemp expires=0
 
-#      - name: Reset timers
-#        command: "chage -I 30 -M 60 bbeecroft"
+      - name: Reset timers
+        command: "chage -I 30 -M 60 ckemp"
       
 #      - name: Change password
 #        user: name={{  item.name  }} password={{  item.pass  }}

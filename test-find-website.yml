@@ -1,9 +1,9 @@
 ---
-- hosts: ws3
+- hosts: all
   remote_user: jlouthan
   tasks:
       - name:  Get expiration information for all accounts
-        shell: 'ls -la /var/www/ | grep jira'
+        shell: 'ls -la /var/www/ | grep qa-connect-ap'
         register: find
         become: yes
         become_method: sudo

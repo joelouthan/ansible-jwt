@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: ws4:app27
   remote_user: jlouthan
   become: yes
   become_method: sudo

@@ -1,0 +1,15 @@
+---
+- hosts: int7
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  
+  tasks:
+      - name:  Find the user(s)
+        shell: "cat /etc/passwd | grep {{  item  }}"
+        with_items:
+            - bkochar
+            - jlouthan
+        register: user
+
+      - debug: var=user.stdout_lines

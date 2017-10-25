@@ -1,0 +1,16 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Find websites
+        find:
+          paths: /var/www/
+          file_type: directory
+          pattern: "training-adportal.marines.com"
+        register: websites_found
+
+      - debug: 
+          msg: "{{ websites_found.files }}"

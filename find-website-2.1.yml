@@ -1,0 +1,16 @@
+---
+- hosts: all:!usmc8
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Find websites
+        find:
+          paths: /var/www/
+          file_type: directory
+          patterns: 'stg-rmi*'
+        register: websites_matched
+
+      - debug:
+          msg: "{{  websites_matched.files  }}"
