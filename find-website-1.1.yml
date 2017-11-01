@@ -8,5 +8,4 @@
       - name:  Find websites
         shell: 'ls -la /var/www/ | grep {{  item  }}'
         with_items:
-          - cmt.marines.com
-          - stg-rmi.marines.com
+          - eppc.marines.com

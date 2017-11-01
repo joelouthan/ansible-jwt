@@ -3,7 +3,7 @@
 # file to edit
 
 dirPlay='/home/jlouthan/Playbooks'
-menu="$dirPlay/menuSec.txt"
+menu="$dirPlay/menuGCC.txt"
 
 ls -1 $dirPlay | grep yml | grep IT > $menu
 
