@@ -1,17 +1,17 @@
 ---
-- hosts: usvi8
+- hosts: web1-ep
   remote_user: jlouthan
   become: yes
   become_method: sudo
   tasks:
       - name: Unlock account
-        command: passwd -u ckemp
+        command: passwd -u secops
 
       - name: Unexpire account
-        user: name=ckemp expires=0
+        user: name=secops expires=0
 
       - name: Reset timers
-        command: "chage -I 30 -M 60 ckemp"
+        command: "chage -I 30 -M 60 secops"
       
 #      - name: Change password
 #        user: name={{  item.name  }} password={{  item.pass  }}
