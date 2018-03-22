@@ -1,5 +1,5 @@
 ---
-- hosts: web1-ep
+- hosts: all
   remote_user: jlouthan
   become: yes
   become_method: sudo
@@ -8,12 +8,4 @@
         command: passwd -u secops
 
       - name: Unexpire account
-        user: name=secops expires=0
-
-      - name: Reset timers
-        command: "chage -I 30 -M 60 secops"
-      
-#      - name: Change password
-#        user: name={{  item.name  }} password={{  item.pass  }}
-#        with_items:
-#                - { name: 'jlouthan' , pass: '$6$rounds=656000$MhSOJUhbby3Q5s5M$BS1afQtSnITTkM28fjjbh2XqrLcGyUfUU7tQtz3vnzexSYX3gbspCiOGPbJT7BC0Ev3w6kxvyB8TemxnsyfM3/' }
+        command: "chage -I -1 -M -1 -E -1 secops"

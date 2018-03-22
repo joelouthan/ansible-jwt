@@ -1,5 +1,5 @@
 ---
-- hosts: all:!usmc8
+- hosts: web
   remote_user: jlouthan
   become: yes
   become_method: sudo

@@ -3,7 +3,7 @@ playbackup
 playbooks
 playdeploys
 playfind
+playGCC
 playrestarts
-playSec
 playtests
 playuser

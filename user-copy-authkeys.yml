@@ -5,7 +5,12 @@
   become_method: sudo
 
   tasks:
-        - name: Copy authkeys to .ssh dirs
+        - name: Create .ssh dirs
+          file: path=/home/{{  item  }}/.ssh state=directory owner={{  item  }} group={{  item  }} mode=0700
+          with_items:
+            - jlouthan
+
+        - name: Copy authkeys
           copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0700
           with_items:
-            - ckemp
+            - jlouthan

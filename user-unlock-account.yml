@@ -1,19 +1,19 @@
 ---
-- hosts: usvi8
+- hosts: web1-ep:web2-ep
   remote_user: jlouthan
   become: yes
   become_method: sudo
   tasks:
       - name: Change password
-        user: name={{  item.name  }} password={{  item.pass  }}
+        user: name={{  item.name  }} password={{  item.pass  }}#
         with_items:
-           - { name: 'ckemp', pass: '$6$rounds=656000$NqyBGppyyuCQmiF1$5sX8nvm81IjFXwQpch//aJ2AEAcMqfTa.ze4LCS4fNOoZKIta9Y/xxM105kAcfSSRKIehSzkIHRkDlKF6M1Qc.' }
+           - { name: 'bwilliams', pass: '$6$rounds=656000$WeGOzpyUQxEuXLD7$OZkRkHQ8VnA45.WhOknTgW.pt/SSgw3NUPvJoXKebiw8yiv/qj6Sppp8pmu62BL0aBdHo9yc9zqC/nAzce4Vl0' }
 
       - name: Unlock account
-        command: passwd -u ckemp
+        command: passwd -u bwilliams
 
       - name: Expire account
-        command: "chage -I 30 -M 60 -E -1 ckemp"
+        command: "chage -I -1 -M -1 -E -1 bwilliams"
 
 #      - name: Copy authorized_keys
-#        copy: src=authkeys/ckemp dest=/home/ckemp/.ssh/authorized_keys owner=ckemp group=ckemp mode="u+rwx,g-rwx,o-rwx"
+#        copy: src=authkeys/bwilliams dest=/home/bwilliams/.ssh/authorized_keys owner=bwilliams group=bwilliams mode="u+rwx,g-rwx,o-rwx"
