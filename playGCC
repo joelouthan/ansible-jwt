@@ -17,7 +17,7 @@ fileList=$(cat $menu)
 # then invoke the editor on that file
 select fileName in $fileList; do
     if [ -n "$fileName" ]; then
-        ansible-playbook ${fileName}
+        ansible-playbook -K ${fileName}
     fi
     break
 done

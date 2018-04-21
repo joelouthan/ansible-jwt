@@ -1,19 +1,17 @@
 ---
 - hosts: all
   remote_user: jlouthan
+  become: yes
+  become_method: sudo
   tasks:
       - name:  Get expiration information for all accounts
         shell: 'cut -f 1 -d: /etc/passwd | xargs -n 1 -I {} bash -c " echo {} ; chage -l {}" | grep -v "does not exist"'
         register: chage
-        become: yes
-        become_method: sudo
 
       - debug: var=chage.stdout_lines
 
       - name: Get listing of all locked accounts
         shell: 'grep \!\! /etc/shadow | cut -d: -f1'
         register: locked
-        become: yes
-        become_method: sudo
 
       - debug: var=locked.stdout_lines

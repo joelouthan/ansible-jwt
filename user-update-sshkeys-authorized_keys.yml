@@ -1,17 +1,16 @@
 ---
-- hosts: all
+- hosts: app30
   remote_user: jlouthan
   become: yes
   become_method: sudo
+
   tasks: 
-#      - name: Remove files from current bwilliams .ssh dir
-#        command: rm -f /home/bwilliams/.ssh/*
+        - name: Create .ssh directory
+          file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
+          with_items:
+            - jlouthan
 
-      - name: Create .ssh within homedir
-
-
-      - name: Copy authorized_keys file
-        file: path=/home/bwilliams/.ssh/authorized_keys state=touch mode=0700
-
-      - name: Insert new key
-        shell: echo "" >> /home/bwilliams/.ssh/authorized_keys
+        - name: Copy authkeys to .ssh dirs
+          copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
+          with_items:
+            - jlouthan

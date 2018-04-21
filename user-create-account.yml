@@ -10,12 +10,12 @@
 
   tasks:
       - name: Create account
-        user: name=dhalliyur shell=/bin/bash groups=wheel home=/home/dhalliyur/
+        user: name=jlouthan shell=/bin/bash groups=wheel home=/home/jlouthan/
 
       - name: Expire account
-        command: "chage -I 30 -M 60 dhalliyur"
+        command: "chage -I 30 -M 60 jlouthan"
                                 
       - name: Reset password
-        user: name=dhalliyur password={{ password }}
+        user: name=jlouthan password={{ password }}
         become: yes
         become_method: sudo
