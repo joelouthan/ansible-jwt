@@ -6,8 +6,8 @@
   
   tasks:
       - name: Find file
-        stat: path=/root/relink_logs.sh
+        shell: "updatedb ; locate strut"
         register: fwd
 
-      - debug: msg="/root/relink_logs.sh found here"
+      - debug: msg=".forward file found here"
         when: fwd.stat.exists == True

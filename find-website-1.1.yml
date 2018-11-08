@@ -8,4 +8,4 @@
       - name:  Find websites
         shell: 'ls -la /var/www/ | grep {{  item  }}'
         with_items:
-          - int-dmpreview.marines.com
+          - qa-connect.marines.com

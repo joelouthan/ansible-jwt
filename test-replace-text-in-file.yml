@@ -1,0 +1,26 @@
+---
+- hosts: ws1
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+#      - name: create root's cron if not there already
+#        lineinfile:
+#          dest: /root/cron-root
+#          regexp: '^'
+#          line: "#Ansible: aide\n30 03 * * * nice -19 /usr/sbin/aide --check --config=/etc/aide.conf 2>&1 | mail -r postmaster@marines.com -s \"AIDE Results from `hostname` on `date`\" joseph.louthan@mirumagency.com mark.hanna@mirumagency.com\n#Ansible: saving results to aide.log\n30 22 * * 4 nice -19 /root/aideclear.sh >>/root/aideclear.log 2>&1"
+#          state: present
+#          create: true
+
+      - lineinfile:
+          path: /root/cron-root
+          line: "#Ansible: aide check"
+          insertbefore: 'aide.conf'
+          firstmatch: yes
+
+      - lineinfile:
+          path: /root/cron-root
+          line: "#Ansible: saving results to aide.log"
+          insertbefore: 'aideclear.sh'
+          firstmatch: yes

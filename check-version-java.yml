@@ -5,7 +5,7 @@
   become_method: sudo
 
   tasks:
-      - name:  Get Disk Space information on all mounts
+      - name: Check java version 
         shell: 'java -version'
         register: version
 

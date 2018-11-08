@@ -1,5 +1,5 @@
 ---
-- hosts: web1-ep:web2-ep
+- hosts: ws1
   remote_user: jlouthan
   become: yes
   become_method: sudo
@@ -7,13 +7,13 @@
       - name: Change password
         user: name={{  item.name  }} password={{  item.pass  }}#
         with_items:
-           - { name: 'bwilliams', pass: '$6$rounds=656000$WeGOzpyUQxEuXLD7$OZkRkHQ8VnA45.WhOknTgW.pt/SSgw3NUPvJoXKebiw8yiv/qj6Sppp8pmu62BL0aBdHo9yc9zqC/nAzce4Vl0' }
+           - { name: 'jburns', pass: '$6$rounds=656000$WTHITYa1pzGrn56o$jfylfChSvc1r7rHf7KFFhmBsRTpPv1QpWsMLFTQiK2.DB6HnFM/NRJb5jEPEdX6x4UTo.Z9WIpqUjVrWgciLF.' }
 
       - name: Unlock account
-        command: passwd -u bwilliams
+        command: passwd -u jburns
 
-      - name: Expire account
-        command: "chage -I -1 -M -1 -E -1 bwilliams"
+      - name: Unexpire account
+        command: "chage -I -1 -M -1 -E -1 jburns"
 
 #      - name: Copy authorized_keys
-#        copy: src=authkeys/bwilliams dest=/home/bwilliams/.ssh/authorized_keys owner=bwilliams group=bwilliams mode="u+rwx,g-rwx,o-rwx"
+#        copy: src=authkeys/jburns dest=/home/jburns/.ssh/authorized_keys owner=jburns group=jburns mode="u+rwx,g-rwx,o-rwx"

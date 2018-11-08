@@ -1,0 +1,9 @@
+---
+- hosts: all:!usvi
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  
+  tasks:
+      - name: Copy file
+        copy: src=/home/jlouthan/Playbooks/conf/syslog dest=/etc/logrotate.d/syslog owner=root group=root mode=0644

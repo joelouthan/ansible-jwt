@@ -1,0 +1,12 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Find file
+        shell: 'locate -e strut'
+        register: locate
+
+      - debug: var=locate.stdout_lines

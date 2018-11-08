@@ -1,26 +1,29 @@
 ---
-- hosts: ws1:aem
+- hosts: stgweb1-ep:stgweb2-ep:ws1
   remote_user: jlouthan
   become: yes
   become_method: sudo
 
   tasks:
+        - name: Create group
+          group: name=devs state=present
+
         - name: Create users
-          user: name={{  item.name  }} state=present password={{  item.pass  }}  shell='/bin/bash'
+          user: name={{  item.name  }} state=present password={{  item.pass  }}  shell='/bin/bash' append=yes groups=devs
           with_items:
-                 - { name: 'bahamat' , pass: '$6$rounds=656000$pT7/upjCdVTuPsPk$oG4wirpBNhjD52SCtkWlrf9OaMYyI/Rxb9AfhngGHq1rqkwhj6.K0i5wxLU43xNCR2OUSPLM7M2a.RvPmT.xG0' }
-                
+                 - { name: 'lowens' , pass: '$6$rounds=656000$o2YC1cEsVnC2Rz.E$JnGaTtyPi2zaMo1cdVV/7rG7iPiKV3Zfvn4TNxUHascoZxuSHx47UI1EBlwJR33HEH7FnUbs88XHw7SQiTFwb/' }
+
         - name: Expire account
           command: "chage -I 30 -M 60 {{  item  }}"
           with_items:
-            - bahamat
+            - lowens
 
         - name: Create .ssh directory
           file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
           with_items:
-            - bahamat
+            - lowens
 
         - name: Copy authkeys to .ssh dirs
           copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
           with_items:
-            - bahamat
+            - lowens

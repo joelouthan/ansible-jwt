@@ -11,6 +11,6 @@
             - jburns
 
         - name: Copy authkeys
-          copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
+          copy: src=pubkeys/{{  item  }}/id_rsa.pub dest=/home/{{  item  }}/.ssh/id_rsa.pub owner={{  item  }} group={{  item  }} mode=0600
           with_items:
             - jburns

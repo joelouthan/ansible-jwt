@@ -1,0 +1,73 @@
+---
+- hosts: web
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name:  Find websites
+        command: "ls -1 /var/www/ | grep {{ item }} && echo -n '\t' && /sbin/ifconfig eth0 | grep 'inet ' | cut -d: -f2 | awk '{print $2}'"
+        register: wheel
+        with_items:
+          - adexchange.marines.com
+            adportal.marines.com
+            aem.marines.com
+            afteraction.marines.com
+            analytics.jwtreporting.com
+            auth.marines.com 
+            author.marines.com
+            Bidev.jwtreporting.com
+            bitbucket.jwtreporting.com
+            cmt.marines.com
+            collect.marines.com
+            confluence.jwtreporting.com
+            connect-ap.marines.com
+            connect.marines.com
+            d2c.m.sform.marines.com
+            dallas.jwtreporting.com
+            dashboard.marines.com
+            dmpreview.marines.com
+            elc.marines.com
+            ems.marines.com 
+            eppc.marines.com
+            eufony.jwtreporting.com
+            facebook.marines.com
+            ftp2.jwtreporting.com
+            ftp1.jwtreporting.com
+            fulfillment.marines.com
+            hispanicheritage.marines.com
+            batcher_proxy.jwtreporting.com
+            locator.jwtreporting.com
+            maps.jwtreporting.com
+            influencer.marines.com
+            jira.jwtreporting.com
+            links.marines.com
+            m.marines.com
+            m.sform.marines.com
+            mail.usmc.marines.com
+            mail1.usmc.marines.com
+            mailgen.marines.com
+            marineofficer.com
+            marines.com
+            media.marines.com
+            mw.marines.com
+            officer.marines.com
+            officerinfo.marines.com
+            oppc.marines.com
+            orig-aem.marines.com
+            osoemail.usmc.marines.com
+            ourhistory.marines.com
+            referral.marines.com
+            rmi.marines.com
+            rmi2.marines.com
+            sfaap-ap.marines.com
+            sfaap.marines.com
+            slcda-ap.marines.com
+            slcda.marines.com
+            usmc.marines.com
+            usmc1.marines.com
+            www-aem.marines.com
+            xbox.marines.com
+            youtube.marines.com
+
+      - debug: var=wheel.stdout_lines 

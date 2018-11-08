@@ -1,0 +1,24 @@
+---
+- hosts: stgweb2-ep
+  remote_user: jlouthan
+  become: yes
+  become_user: websync
+  become_method: sudo
+  environment:
+    TMPDIR: "/home/websync/tmp/"
+    TMP: "/home/websync/tmp/"
+    TEMP: "/home/websync/tmp/"
+
+  tasks:
+      - name: Update eventmgmt
+        git:
+          repo: ssh://git@bitbucket.jwtreporting.com:7999/mcrc/eventmanagement_frontend.git
+          dest: /var/www/test-eventmgmt.marines.com
+          accept_hostkey: yes
+          key_file: /home/websync/.ssh/id_rsa
+          clone: no
+
+      - name: Run make_rev
+        script: scripts/make_rev.sh chdir
+        args:
+          chdir: "/var/www/test-eventmgmt.marines.com"

@@ -1,5 +1,5 @@
 ---
-- hosts: app30
+- hosts: all
   remote_user: jlouthan
   become: yes
   become_method: sudo
@@ -8,19 +8,19 @@
         - name: Create users
           user: name={{  item.name  }} state=present groups=wheel password={{  item.pass  }}  shell='/bin/bash'
           with_items:
-                 - { name: 'dhalliyur' , pass: '$6$rounds=656000$6NPfGW5eG0Yj7y3D$k/DtENUDwp.q/QO3B6489nMkikcByV1PdKyxOCDFhf9G3Mym0GWpj7FH0GxN4Yt/MYwHqtNbaXvJluODFOWZu.' }
+                 - { name: 'jbyers' , pass: '$6$rounds=656000$npdJ5jzvQ8QkEEgl$3804VKfMDxMr9Vcz0cjCdPiGANRHwNf0pSw7/0erOaqinFAY5U68Z35eAMHodBkdFIEI9N4GuAroVRZIhBRX11' }
                 
         - name: Expire account
           command: 'chage -I 30 -M 60 -E -1 {{  item  }}'
           with_items:
-            - dhalliyur
+            - jbyers
 
         - name: Create .ssh directory
           file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
           with_items:
-            - dhalliyur
+            - jbyers
 
         - name: Copy authkeys to .ssh dirs
           copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
           with_items:
-            - dhalliyur
+            - jbyers

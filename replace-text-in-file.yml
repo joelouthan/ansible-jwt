@@ -1,0 +1,18 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - lineinfile:
+          path: /var/spool/cron/root
+          regexp: '/etc/aide.conf'
+          line: '30 03 * * * nice -19 /usr/sbin/aide --check --config=/etc/aide.conf 2>&1 | mail -r postmaster@marines.com -s "AIDE Results from `hostname` on `date`" joseph.louthan@mirumagency.com mark.hanna@mirumagency.com'
+          
+      - lineinfile:
+          path: /root/.forward
+          regexp: '^'
+          line: "mark.hanna@mirumagency.com\njoseph.louthan@mirumagency.com"
+          state: present
+          create: true

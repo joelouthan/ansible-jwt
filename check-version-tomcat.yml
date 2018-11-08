@@ -1,5 +1,5 @@
 ---
-- hosts: app27:ws4
+- hosts: web
   remote_user: jlouthan
   become: yes
   become_method: sudo
@@ -12,7 +12,7 @@
         shell: 'find /opt -name catalina.jar > /root/list-tomcat'
 
       - name: Check tomcat version(s)
-        shell: "(for i in `cat /root/list-tomcat`; do java -cp $i org.apache.catalina.util.ServerInfo ; done) > /root/tomcat-versions"
+        shell: "(for i in `cat /root/list-tomcat`; do date ; echo $i ; java -cp $i org.apache.catalina.util.ServerInfo ; done) > /root/tomcat-versions"
 
       - name: Show tomcat version(s)
         shell: "cat /root/tomcat-versions"

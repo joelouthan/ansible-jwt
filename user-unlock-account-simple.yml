@@ -1,11 +1,11 @@
 ---
-- hosts: all
+- hosts: ws1
   remote_user: jlouthan
   become: yes
   become_method: sudo
   tasks:
       - name: Unlock account
-        command: passwd -u secops
+        command: passwd -u dhalliyur
 
       - name: Unexpire account
-        command: "chage -I -1 -M -1 -E -1 secops"
+        command: "chage -I -1 -M -1 -E -1 dhalliyur"

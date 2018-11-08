@@ -1,0 +1,13 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+      - name: Add username to sudoers
+        replace:
+                path: /etc/sudoers
+                regexp: 'mhanna'
+                replace: 'mhanna, jbyers'
+                backup: yes
