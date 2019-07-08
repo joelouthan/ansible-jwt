@@ -1,9 +1,9 @@
 ---
-- hosts: all:!usmc8
+- hosts: semperfi1:semperfi2
   remote_user: jlouthan
   tasks:
       - name:  Get expiration information for all accounts
-        shell: 'ls -la /var/www/ | grep cmt.marines.com'
+        shell: 'ls -1 /var/www/sites/*/'
         register: find
         become: yes
         become_method: sudo

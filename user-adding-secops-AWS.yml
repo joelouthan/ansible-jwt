@@ -1,0 +1,27 @@
+---
+- hosts: squadbay:battlestold
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  tasks:
+
+      - name: Create account
+        user: name=secops shell=/bin/bash groups=sudo home=/home/secops/
+
+      - name: Change password
+        user: name={{  item.name  }} password={{  item.pass  }}
+        with_items:
+           - { name: 'secops', pass: '$6$rounds=656000$jZbOZ1MJRL.dPU0n$dAK8QsaVXd5PRH3NrQrdF9Xuiv10PWtwElwL/Y2.1evcTt4.i3yvjDcihiqHltjhDKbHbWTNrr0TkT.wgrYI4/' }
+
+      - name: Expire account
+        command: "chage -I -1 -M -1 -E -1 secops"
+                                
+      - name: Create .ssh directory
+        file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
+        with_items:
+               - secops
+
+      - name: Copy authkeys to .ssh dirs
+        copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode="u+rwx,g-rwx,o-rwx"
+        with_items:
+               - secops

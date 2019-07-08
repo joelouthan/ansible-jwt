@@ -1,0 +1,26 @@
+#!/bin/bash
+
+E=$1
+
+date
+/usr/bin/pm2 start ${E}-ecci-ms
+cd /var/www/${E}-ecci-ap.marines.com/
+mv client/package-lock.json client/package-lock.json.old
+git pull
+/usr/local/jwt/bin/make_rev.sh
+sleep 10s
+cd /var/www/${E}-ecci-ap.marines.com/client
+npm install
+npm run build
+cd build
+/bin/ln -s ../../revision.txt revision.txt
+
+cd /var/www/${E}-ecci-ap.marines.com/server
+(ls -la /var/www/${E}-ecci-ap.marines.com/server/config) >> cont-${E}-ecci-default_json.log 2>&1
+sleep 5s
+npm install
+npm run build
+(ls -la /var/www/${E}-ecci-ap.marines.com/server/config) >> cont-${E}-ecci-default_json.log 2>&1
+sleep 5s
+/usr/bin/pm2 start ${E}-ecci-ms
+

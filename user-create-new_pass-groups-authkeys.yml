@@ -5,22 +5,27 @@
   become_method: sudo
 
   tasks:
+        - name: Ensure group "wheel" exists
+          group:
+                name: wheel
+                state: present
+
         - name: Create users
           user: name={{  item.name  }} state=present groups=wheel password={{  item.pass  }}  shell='/bin/bash'
           with_items:
-                 - { name: 'jbyers' , pass: '$6$rounds=656000$npdJ5jzvQ8QkEEgl$3804VKfMDxMr9Vcz0cjCdPiGANRHwNf0pSw7/0erOaqinFAY5U68Z35eAMHodBkdFIEI9N4GuAroVRZIhBRX11' }
+                 - { name: 'jatkins' , pass: '$6$rounds=656000$.uT5NtRnQB7sQokU$n/zlS8ObgAipDWZ7fAW4r3.2f6hRvNMnrxRYQtGrKfttjD0y/aENeam2IG4ahd0Q295m2hWhigeQ62cpPPjjg.' }
                 
         - name: Expire account
           command: 'chage -I 30 -M 60 -E -1 {{  item  }}'
           with_items:
-            - jbyers
+            - jatkins
 
         - name: Create .ssh directory
           file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
           with_items:
-            - jbyers
+            - jatkins
 
         - name: Copy authkeys to .ssh dirs
           copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
           with_items:
-            - jbyers
+            - jatkins

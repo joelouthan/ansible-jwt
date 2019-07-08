@@ -1,29 +1,29 @@
 ---
-- hosts: ws1:dbusmc
+- hosts: ws1:test-automation
   remote_user: jlouthan
   become: yes
   become_method: sudo
 
   tasks:
         - name: Create group
-          group: name=dbadmins state=present
+          group: name=qa state=present
 
         - name: Create users
-          user: name={{  item.name  }} state=present password={{  item.pass  }}  shell='/bin/bash' append=yes groups=dbadmins
+          user: name={{  item.name  }} state=present password={{  item.pass  }}  shell='/bin/bash' append=yes groups=qa
           with_items:
-                 - { name: 'jfargason' , pass: '$6$rounds=656000$DoKGt/Qz/A1mcRva$PQVhnDuT2iO/E1zB7q05o7vG0crjrfXim7ZQ4D/DK.bAkMkO.yRfFtKbKj1bmBQpUZCki4eHkj8MVoMEPgmnl/' }
+                 - { name: 'erincon' , pass: '$6$rounds=656000$ouOmnulwV8BClK7i$D3QNKaaRvkFP3CH2m5PfzsGcjDu3GGF51cLHgB8vMFTgaXkdSnKPHokWPIx8OsAms7W.b4Fxstmd42Mcj9f1d.' }
 
         - name: Expire account
           command: "chage -I 30 -M 60 {{  item  }}"
           with_items:
-            - jfargason
+            - erincon
 
         - name: Create .ssh directory
           file: path=/home/{{  item  }}/.ssh/ state=directory mode=0700 owner={{  item  }} group={{  item  }}
           with_items:
-            - jfargason
+            - erincon
 
         - name: Copy authkeys to .ssh dirs
           copy: src=authkeys/{{  item  }} dest=/home/{{  item  }}/.ssh/authorized_keys owner={{  item  }} group={{  item  }} mode=0600
           with_items:
-            - jfargason
+            - erincon

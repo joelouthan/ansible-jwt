@@ -1,0 +1,12 @@
+---
+- hosts: web1-ep:web2-ep
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+ 
+  tasks:
+  - name: Clearing namespace cache for eppc
+    shell: /bin/rm -rf /var/www/eppc.marines.com/app/cache/*/*
+
+  - name: Clearing namespace cache for oppc
+    shell: /bin/rm -rf /var/www/oppc.marines.com/app/cache/*/*

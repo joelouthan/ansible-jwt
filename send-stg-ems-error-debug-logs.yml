@@ -1,0 +1,27 @@
+---
+- hosts: stgweb1-ep:stgweb2-ep
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+
+  tasks:
+        - name: Sending stg-ems error and debug logs to Landon, Joe
+          become: yes
+          become_user: websync
+          become_method: sudo
+          mail:
+            host: localhost
+            port: 25
+            subject: Logs from {{ ansible_hostname }}
+            body: Here are the logs that you have requested
+            from: websync <websync@marines.com>
+            to:
+            - Landon Owens <landon.owens@mirumagency.com>
+            - Joseph Louthan <joseph.louthan@mirumagency.com>
+            attach:
+            - /var/www/stg-ems.marines.com/logs/debug.log
+            - /var/www/stg-ems.marines.com/logs/error.log
+            headers:
+            - Reply-To=websync@marines.com
+            charset: us-ascii
+          delegate_to: stgweb1-ep:stgweb2-ep

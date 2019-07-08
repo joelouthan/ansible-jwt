@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Color
+blacktext=`tput setaf 0`
+blackback=`tput setab 0`
+magentatext=`tput setaf 5`
+redback=`tput setab 1`
+yellowback=`tput setab 3`
+greenback=`tput setab 2`
+cyanback=`tput setab 6`
+blueback=`tput setab 4`
+magentaback=`tput setab 5`
+reset=`tput sgr0`
+
+# Header
+echo "$blacktext$magentaback"
+echo "Which environment-app do you want to update?"
+
+# Set the prompt for the select command
+PS3="Type a number or 'q' to quit: "
+
+# Create a list of files to display
+envapplist=$(cat /home/websync/bin/envapp)
+echo "$reset"
+
+select name in $envapplist; do
+ if [ -n "$name" ]; then
+  
+  dir="/var/www/$name.marines.com"
+  dirlogs="$dir/app/logs"
+  console=console.log
+  consolelogs="$dirlogs/$console"
+  error=error.log
+  errorlogs="$dirlogs/$error"
+  websynclogs='/home/websync/logs'
+  makerev='/usr/local/jwt/bin/make_rev.sh'
+  gitpull='git pull'
+
+  # Stop for the forever process
+  echo "$blacktext$redback"
+  echo "Stopping $name forever process..."
+  echo "$reset" ; forever stop $name
+  echo "$blacktext$redback"
+  echo "Done."
+
+  # Rotate the pertinent logs
+  echo "$blacktext$yellowback"
+  echo "Rotating the pertinent logs"
+  echo "Also, remove backup console and error logs older than 7 days"
+  mv $dirlogs/$console $dirlogs/$console`date +%Y%m%d.%H%M`
+  mv $dirlogs/$error $dirlogs/$error`date +%Y%m%d.%H%M`
+  touch $dirlogs/$console $dirlogs/$error
+  find $dirlogs -type f -name 'console.log2*' -mtime +7 -exec rm -f {} \;
+  find $dirlogs -type f -name 'error.log2*' -mtime +7 -exec rm -f {} \;
+  echo "Done."
+
+  # Code pull from master
+  echo "$blacktext$greenback"
+  echo "Pulling code (assuming master)..."
+  (date ; cd $dir ; git pull origin master ; $makerev ) >> $websynclogs/cont-$name.marines.com.log 2>&1
+  echo "Done."
+
+  # Pause enough time to help forever kill the process
+  echo "$blacktext$greenback"
+  echo "Wait for it..."
+  sleep 5s
+
+  # Start the forever
+  echo "$blacktext$greenback"
+  echo "Restarting the $name forever process"
+  echo "$reset" ; forever start -m 4 --sourceDir $dir/ --workingDir $dir/ --minUptime 1000 --spinSleepTime 1000 --uid $name -p $dirlogs/ -l $console -w --watchDirectory $dir/ --watchIgnore -t -a app.js
+  echo "$blacktext$greenback"
+  echo "Done."
+
+  # Monitor the logs to ensure error-free startup
+  echo "$blacktext$cyanback"
+  echo "Tailing console, error and code pull logs for your convenience."
+  echo "(Please hit Ctrl+C to escape.)"
+  echo "$reset"
+  tail -f $dirlogs/$console $dirlogs/$error $websynclogs/cont-$name.marines.com.log
+ fi
+ break
+ echo "$reset"
+done

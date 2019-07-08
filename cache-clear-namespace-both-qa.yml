@@ -1,0 +1,12 @@
+---
+- hosts: stgweb1-ep:stgweb2-ep
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+ 
+  tasks:
+  - name: Clearing namespace cache for qa-eppc
+    shell: /bin/rm -rf /var/www/qa-eppc.marines.com/app/cache/*/*
+
+  - name: Clearing namespace cache for qa-oppc
+    shell: /bin/rm -rf /var/www/qa-oppc.marines.com/app/cache/*/*

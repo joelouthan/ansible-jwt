@@ -1,18 +1,19 @@
 ---
-- hosts: all
+- hosts: ws1:test-automation
   remote_user: jlouthan
   become: yes
   become_method: sudo 
 
   tasks:
       - name: Adding mirumwheel group
-        group: name=mirumwheel state=present
+        group: name=qa state=present
 
       - name: Add user to mirumwheel group
-        user: name={{  item  }} groups=mirumwheel
+        user: name={{  item  }} groups=qa
         with_items:
-         - bbeecroft
-         - mhiivala
-         - kchu
-         - kmasud
-         - rchavez
+         - erjimenez
+         - amcdaniel
+         - rmccoy
+         - trodgers
+         - erincon
+         - srudra

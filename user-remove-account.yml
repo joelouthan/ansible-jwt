@@ -1,0 +1,11 @@
+---
+- hosts: all:!ws1:!test-automation
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  vars:
+        password: $6$rounds=656000$S1s6aBDIxgiDN2RI$vhhXHFu.aqDNrJCu36qMLtP8S0usEbZi21zxF4ui6S5zv6Ctb1ktt3UxDv8F16ZVBILTEqK7.0TGXAwAYCN0j0
+  
+  tasks:
+      - name: Remove account
+        user: name=srudra state=absent

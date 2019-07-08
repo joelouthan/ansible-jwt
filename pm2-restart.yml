@@ -1,0 +1,18 @@
+---
+- hosts: stgweb1-ep:stgweb2-ep
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  
+  vars:
+        my_webapp: "{{ webapp }}"
+
+  tasks:
+        - name: pm2 restarting...
+  #        command: pm2 restart {{ my_webapp }}
+          script: "scripts/restartmicro.sh {{ my_webapp }}"
+          register: pm2
+          args:
+            executable: /usr/local/bin/node
+
+        - debug: var=pm2.stdout_lines

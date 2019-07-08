@@ -1,0 +1,19 @@
+---
+- hosts: all
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  vars:
+        # created with
+        # python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
+        password: $6$rounds=656000$bEJnpHqNguOhHtlp$QbZ3C.mImj00XMDvt1KhLQHV2DHOF9LtrjfA62KxGzYo9u8otUrt61RPniC0kpCjY0N3E3p9xx.d8rqaJvp.S.
+
+  tasks:
+      - name: Reset password
+        user: name=jatkins password={{ password }}
+
+      - name: Unlock account
+        command: passwd -u jatkins
+
+      - name: Expire account
+        command: "chage -I 30 -M 60 -E -1 jatkins"

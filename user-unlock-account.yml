@@ -1,5 +1,5 @@
 ---
-- hosts: ws1
+- hosts: all
   remote_user: jlouthan
   become: yes
   become_method: sudo
@@ -7,13 +7,13 @@
       - name: Change password
         user: name={{  item.name  }} password={{  item.pass  }}#
         with_items:
-           - { name: 'jburns', pass: '$6$rounds=656000$WTHITYa1pzGrn56o$jfylfChSvc1r7rHf7KFFhmBsRTpPv1QpWsMLFTQiK2.DB6HnFM/NRJb5jEPEdX6x4UTo.Z9WIpqUjVrWgciLF.' }
+           - { name: 'srudra', pass: '$6$rounds=656000$Vm30Wg4W5Tb0RxpW$OotJRNf7puGlal.H4bV6mi/aABzB5k/TI8.A0lrfnySBUtTu5uTU/CtkX.beqE3gJm3lcs1GJ5IrN/bJDM4G.0' }
 
       - name: Unlock account
-        command: passwd -u jburns
+        command: passwd -u srudra
 
       - name: Unexpire account
-        command: "chage -I -1 -M -1 -E -1 jburns"
+        command: "chage -I 30 -M 60 -E -1 srudra"
 
 #      - name: Copy authorized_keys
-#        copy: src=authkeys/jburns dest=/home/jburns/.ssh/authorized_keys owner=jburns group=jburns mode="u+rwx,g-rwx,o-rwx"
+#        copy: src=authkeys/srudra dest=/home/srudra/.ssh/authorized_keys owner=srudra group=srudra mode="u+rwx,g-rwx,o-rwx"

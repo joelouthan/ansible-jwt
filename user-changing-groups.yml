@@ -5,26 +5,20 @@
   become_method: sudo
 
   tasks:
-      - name: Delete the old miriumwheel group 
-        group: name=miriumwheel state=absent
+      - name: Add wheel group
+        group: name=wheel state=present
 
-      - name: Add mirumwheel group
-        group: name=mirumwheel state=present
+      - name: Clean up mirumwheel group
+        group: name=mirumwheel state=absent
 
-      - name: Add the Mirum guys to mirumwheel group
-        user: name={{  item  }} state=present groups=mirumwheel 
+      - name: Add the SysAdmins/Security to wheel group
+        user: name={{  item  }} state=present groups=wheel
         with_items:
-               - bbeecroft
-               - mhiivala
-               - kchu
-               - kmasud
-               - rchavez
+               - jlouthan
+               - jbyers
+               - jatkins
+               - dhalliyur
+               - secops
 
-      - name: Remove line with miriumwheel in it
-        lineinfile: dest=/etc/sudoers state=absent regexp="miriumwheel"
-
-      - name: Add a new line with comment
-        lineinfile: "dest=/etc/sudoers state=present line='#Adding the mirumwheel group for the Mirum SysAdmins'"
-
-      - name: Adding mirumwheel line
-        lineinfile: "dest=/etc/sudoers state=present line='%mirumwheel  ALL=(ALL)       ALL'"
+      - name: Adding wheel line to sudoers
+        lineinfile: "dest=/etc/sudoers state=present line='%wheel  ALL=(ALL)       ALL'"
