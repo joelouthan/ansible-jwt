@@ -1,0 +1,16 @@
+---
+- hosts: ws1
+  remote_user: jlouthan
+  become: yes
+  become_method: sudo
+  vars:
+        # created with
+        # python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
+        password: $6$rounds=656000$S1s6aBDIxgiDN2RI$vhhXHFu.aqDNrJCu36qMLtP8S0usEbZi21zxF4ui6S5zv6Ctb1ktt3UxDv8F16ZVBILTEqK7.0TGXAwAYCN0j0
+
+  tasks:
+      - name: Create account
+        user: name=bwilliams shell=/bin/bash groups= home=/home/bwilliams/
+
+      - name: Expire account
+        command: "chage -I 30 -M 60 bwilliams"

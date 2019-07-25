@@ -1,12 +1,14 @@
 ---
-- hosts: qaweb1:qaweb2:web1:web2:web3:stgweb1-ep:stgweb2-ep:web1-ep:web2-ep
+- hosts: ws1:db
   remote_user: jlouthan
   become: yes
   become_method: sudo
 
   tasks:
       - name: Create account
-        user: name=bwilliams shell=/bin/bash groups=wheel home=/home/bwilliams/
+        user: name={{  item  }} shell=/bin/bash home=/home/bwilliams/
+        with_items:
+            - bwilliams
 
       - name: Expire account
         command: "chage -I 30 -M 60 bwilliams"

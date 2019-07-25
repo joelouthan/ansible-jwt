@@ -8,7 +8,7 @@
       - name:  Find websites
         shell: 'locate -e {{  item  }}'
         loop:
-          - mailgen.marines.com
+          - mailer.marines.com
         register: locate
 
       - debug: var=locate.stdout_lines
